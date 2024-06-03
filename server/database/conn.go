@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"log"
 	"serene-app/exceptions"
+
+	_ "github.com/lib/pq"
 )
 
 func Conn() {
