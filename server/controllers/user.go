@@ -19,7 +19,7 @@ func NewUserController(w web.ResponseWriter, v *validator.Validate, userRepo use
 	return &UserControllerImpl{w, v, userRepo, mailer}
 }
 
-func (ctr UserControllerImpl) Register(c *gin.Context) {
+func (ctr *UserControllerImpl) Register(c *gin.Context) {
 	var body web.UserRegisterProps
 	c.ShouldBind(&body)
 
@@ -83,4 +83,38 @@ func (ctr UserControllerImpl) Register(c *gin.Context) {
 	}()
 
 	ctr.WriteResponse(c, 201, "success", data)
+}
+
+func (ctr *UserControllerImpl) Login(c *gin.Context) {
+	var body web.UserLoginProps
+	c.ShouldBind(&body)
+
+	var data user.User
+	if err := ctr.userRepo.GetDb().QueryRowContext(
+		c.Request.Context(),
+		h.LogQuery(
+			fmt.Sprintf(`SELECT s.id, s.username, s.email, s.password, s.is_verified FROM "%s" s WHERE email = $1`, user.TABLE_NAME),
+		),
+		body.Email,
+	).Scan(
+		&data.Id, &data.Username, &data.Email, &data.Password, &data.IsVerified,
+	); err != nil && err != sql.ErrNoRows {
+		ctr.AbortResponse(c, err)
+		return
+	} else if err == sql.ErrNoRows {
+		ctr.AbortResponse(c, exceptions.NewError("invalid credentials", 401))
+		return
+	}
+
+	if !h.CompareHash(data.Password, body.Password) {
+		ctr.AbortResponse(c, exceptions.NewError("invalid credentials", 401))
+		return
+	}
+
+	if !data.IsVerified {
+		ctr.AbortResponse(c, exceptions.NewError("your account is not verified", 401))
+		return
+	}
+
+	ctr.WriteResponse(c, 200, "OK", h.GenerateJwtToken(data.Id, data.Username, data.Email, data.IsVerified))
 }

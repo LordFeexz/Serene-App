@@ -11,6 +11,7 @@ import (
 
 type UserController interface {
 	Register(c *gin.Context)
+	Login(c *gin.Context)
 }
 
 type UserControllerImpl struct {
