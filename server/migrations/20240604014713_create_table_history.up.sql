@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS History (
+    id SERIAL PRIMARY KEY,
+    feature_used VARCHAR(255) NOT NULL,
+    user_id UUID NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_user
+      FOREIGN KEY(user_id) 
+      REFERENCES "User"(id)
+);
