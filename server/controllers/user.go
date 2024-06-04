@@ -143,3 +143,7 @@ func (ctr *UserControllerImpl) ResendEmailVerification(c *gin.Context) {
 	go ctr.userService.SendEmailVerification(data)
 	ctr.WriteResponse(c, 200, "success", nil)
 }
+
+func (ctr *UserControllerImpl) Me(c *gin.Context) {
+	ctr.WriteResponse(c, 200, "ok", ctr.userService.GetUserFromRequestCtx(c))
+}

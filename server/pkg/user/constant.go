@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"serene-app/mail"
+
+	"github.com/gin-gonic/gin"
 )
 
 type UserRepo interface {
@@ -15,6 +17,7 @@ type UserRepoImpl struct{ *sql.DB }
 
 type UserService interface {
 	SendEmailVerification(data User) error
+	GetUserFromRequestCtx(c *gin.Context) User
 }
 
 type UserServiceImpl struct{ mailer mail.Mailer }

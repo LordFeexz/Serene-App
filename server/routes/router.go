@@ -15,7 +15,7 @@ func NewRoutes(
 	r.Use(gin.Recovery())
 
 	groupRoutes := r.Group("/api/v1")
-	r.userRoute(groupRoutes, user)
+	r.userRoute(groupRoutes, user, md)
 
 	return r.Run
 }

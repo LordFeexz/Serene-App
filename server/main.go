@@ -28,12 +28,12 @@ func main() {
 	validate := validator.New()
 	w := web.NewResponseWriter()
 	mailer := mail.NewSender()
-	md := middlewares.New()
 
 	userRepo := user.NewRepo()
 
 	userService := user.NewService(mailer)
 
+	md := middlewares.New(w, userRepo)
 	userController := controllers.NewUserController(w, validate, userRepo, userService)
 
 	log.Printf("starting application on port %s", port)

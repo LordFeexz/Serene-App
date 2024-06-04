@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"serene-app/pkg/user"
 	"serene-app/web"
 
 	"github.com/gin-gonic/gin"
@@ -8,6 +9,10 @@ import (
 
 type Middlewares interface {
 	Cors() gin.HandlerFunc
+	Authentication(c *gin.Context)
 }
 
-type MiddlewaresImpl struct{ web.ResponseWriter }
+type MiddlewaresImpl struct {
+	web.ResponseWriter
+	userRepo user.UserRepo
+}

@@ -8,7 +8,7 @@ import (
 )
 
 func GenerateJwtToken(id, username, email string, isVerified bool) string {
-	token := jwt.NewWithClaims(jwt.SigningMethodES256, jwt.MapClaims{
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id":         id,
 		"username":   username,
 		"email":      email,
@@ -25,7 +25,7 @@ func VerifyToken(token string) (jwt.MapClaims, error) {
 		return []byte(os.Getenv("SECRET_KEY")), nil
 	})
 	if err != nil || !payload.Valid {
-		return nil, exceptions.NewError("missing or invalid token", 401)
+		return nil, exceptions.NewError("invalid token", 401)
 	}
 	return claim, nil
 }

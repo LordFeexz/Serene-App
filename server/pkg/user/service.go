@@ -5,6 +5,8 @@ import (
 	"os"
 	h "serene-app/helpers"
 	"serene-app/mail"
+
+	"github.com/gin-gonic/gin"
 )
 
 func NewService(m mail.Mailer) UserService {
@@ -18,4 +20,16 @@ func (s *UserServiceImpl) SendEmailVerification(data User) error {
 	))
 	msg := mail.NewMessage("Email Verification", html, []string{data.Email})
 	return s.mailer.Send(msg)
+}
+
+func (s *UserServiceImpl) GetUserFromRequestCtx(c *gin.Context) (data User) {
+	//make sure u already put auth middleware
+	ctx, ok := c.Get("user")
+	if !ok {
+		return
+	}
+
+	data, _ = ctx.(User)
+
+	return
 }
