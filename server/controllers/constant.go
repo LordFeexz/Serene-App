@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"serene-app/mail"
 	"serene-app/pkg/user"
 	"serene-app/web"
 
@@ -12,11 +11,12 @@ import (
 type UserController interface {
 	Register(c *gin.Context)
 	Login(c *gin.Context)
+	ResendEmailVerification(c *gin.Context)
 }
 
 type UserControllerImpl struct {
 	web.ResponseWriter
-	validate *validator.Validate
-	userRepo user.UserRepo
-	mailer   mail.Mailer
+	validate    *validator.Validate
+	userRepo    user.UserRepo
+	userService user.UserService
 }

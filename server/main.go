@@ -32,7 +32,9 @@ func main() {
 
 	userRepo := user.NewRepo()
 
-	userController := controllers.NewUserController(w, validate, userRepo, mailer)
+	userService := user.NewService(mailer)
+
+	userController := controllers.NewUserController(w, validate, userRepo, userService)
 
 	log.Printf("starting application on port %s", port)
 	if err := routes.NewRoutes(md, userController)(":" + port); err != nil {

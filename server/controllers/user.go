@@ -3,10 +3,8 @@ package controllers
 import (
 	"database/sql"
 	"fmt"
-	"os"
 	"serene-app/exceptions"
 	h "serene-app/helpers"
-	"serene-app/mail"
 	"serene-app/pkg/user"
 	"serene-app/web"
 	"time"
@@ -15,8 +13,8 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-func NewUserController(w web.ResponseWriter, v *validator.Validate, userRepo user.UserRepo, mailer mail.Mailer) UserController {
-	return &UserControllerImpl{w, v, userRepo, mailer}
+func NewUserController(w web.ResponseWriter, v *validator.Validate, userRepo user.UserRepo, userService user.UserService) UserController {
+	return &UserControllerImpl{w, v, userRepo, userService}
 }
 
 func (ctr *UserControllerImpl) Register(c *gin.Context) {
@@ -69,18 +67,7 @@ func (ctr *UserControllerImpl) Register(c *gin.Context) {
 		return
 	}
 
-	go func() {
-		html, _ := mail.GetEmailVerif(
-			fmt.Sprintf("%s/user/verify?token=%s",
-				os.Getenv("APPLICATION_BASE_URL"),
-				h.GenerateJwtToken(data.Id, data.Username, data.Email, data.IsVerified),
-			))
-
-		msg := mail.NewMessage("Email Verification", html, []string{data.Email})
-		if err := ctr.mailer.Send(msg); err != nil {
-			println(err.Error())
-		}
-	}()
+	go ctr.userService.SendEmailVerification(data)
 
 	ctr.WriteResponse(c, 201, "success", data)
 }
@@ -88,6 +75,11 @@ func (ctr *UserControllerImpl) Register(c *gin.Context) {
 func (ctr *UserControllerImpl) Login(c *gin.Context) {
 	var body web.UserLoginProps
 	c.ShouldBind(&body)
+
+	if err := ctr.validate.Struct(&body); err != nil {
+		ctr.WriteValidationErrResponse(c, err)
+		return
+	}
 
 	var data user.User
 	if err := ctr.userRepo.GetDb().QueryRowContext(
@@ -117,4 +109,37 @@ func (ctr *UserControllerImpl) Login(c *gin.Context) {
 	}
 
 	ctr.WriteResponse(c, 200, "OK", h.GenerateJwtToken(data.Id, data.Username, data.Email, data.IsVerified))
+}
+
+func (ctr *UserControllerImpl) ResendEmailVerification(c *gin.Context) {
+	var body web.EmailProps
+	c.ShouldBind(&body)
+
+	if err := ctr.validate.Struct(&body); err != nil {
+		ctr.WriteValidationErrResponse(c, err)
+		return
+	}
+
+	var data user.User
+	if err := ctr.userRepo.GetDb().QueryRowContext(
+		c.Request.Context(),
+		h.LogQuery(fmt.Sprintf(`SELECT id, username, email, is_verified FROM "%s" WHERE email = $1`, user.TABLE_NAME)),
+		body.Email,
+	).Scan(
+		&data.Id, &data.Username, &data.Email, &data.IsVerified,
+	); err != nil && err != sql.ErrNoRows {
+		ctr.AbortResponse(c, err)
+		return
+	} else if err == sql.ErrNoRows {
+		ctr.AbortResponse(c, exceptions.NewError("data not found", 404))
+		return
+	}
+
+	if data.IsVerified {
+		ctr.AbortResponse(c, exceptions.NewError("user is already verified", 409))
+		return
+	}
+
+	go ctr.userService.SendEmailVerification(data)
+	ctr.WriteResponse(c, 200, "success", nil)
 }

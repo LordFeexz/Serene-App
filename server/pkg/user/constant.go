@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"database/sql"
+	"serene-app/mail"
 )
 
 type UserRepo interface {
@@ -11,6 +12,12 @@ type UserRepo interface {
 }
 
 type UserRepoImpl struct{ *sql.DB }
+
+type UserService interface {
+	SendEmailVerification(data User) error
+}
+
+type UserServiceImpl struct{ mailer mail.Mailer }
 
 const (
 	TABLE_NAME = "User"
