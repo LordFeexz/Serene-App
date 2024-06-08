@@ -61,5 +61,4 @@ func (ctr *HistoryControllerImpl) GetMyHistory(c *gin.Context) {
 	}
 
 	ctr.WriteResponse(c, 200, "OK", datas)
-
 }

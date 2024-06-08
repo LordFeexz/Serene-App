@@ -36,11 +36,14 @@ func main() {
 	userService := user.NewService(mailer)
 
 	md := middlewares.New(w, userRepo)
-	userController := controllers.NewUserController(w, validate, userRepo, userService)
-	historyController := controllers.NewHistoryController(w, validate, userService, historyRepo)
 
 	log.Printf("starting application on port %s", port)
-	if err := routes.NewRoutes(md, userController, historyController)(":" + port); err != nil {
+	if err := routes.NewRoutes(
+		md,
+		controllers.NewUserController(w, validate, userRepo, userService),
+		controllers.NewHistoryController(w, validate, userService, historyRepo),
+		controllers.NewTestController(w, validate),
+	)(":" + port); err != nil {
 		log.Fatalf("application failed to start : %s", err.Error())
 	}
 }
