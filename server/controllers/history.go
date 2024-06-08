@@ -26,7 +26,7 @@ func (ctr *HistoryControllerImpl) GetMyHistory(c *gin.Context) {
 		c.Request.Context(),
 		h.LogQuery(fmt.Sprintf(
 			`
-				SELECT id, feature_used, user_id, created_at, updated_at 
+				SELECT id, feature_used, user_id, created_at, updated_at, description
 				FROM %s 
 				WHERE user_id = $1
 				ORDER BY %s %s
@@ -47,7 +47,7 @@ func (ctr *HistoryControllerImpl) GetMyHistory(c *gin.Context) {
 	for rows.Next() {
 		var data history.History
 		if err := rows.Scan(
-			&data.Id, &data.FeatureUsed, &data.UserId, &data.CreatedAt, &data.UpdatedAt,
+			&data.Id, &data.FeatureUsed, &data.UserId, &data.CreatedAt, &data.UpdatedAt, &data.Description,
 		); err != nil && err != sql.ErrNoRows {
 			ctr.AbortResponse(c, err)
 			return
