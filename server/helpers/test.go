@@ -1,7 +1,13 @@
-package constants
+package helpers
+
+import (
+	"math/rand"
+	cons "serene-app/constants"
+	"time"
+)
 
 func ValidMentalHealthQuestion(s string) bool {
-	for _, val := range MENTAL_HEALTH_QUESTIONS {
+	for _, val := range cons.MENTAL_HEALTH_QUESTIONS {
 		if val == s {
 			return true
 		}
@@ -18,4 +24,12 @@ func GetMentalHealthResult(point uint8) string {
 	default:
 		return "Segera cari bantuan"
 	}
+}
+
+func GetRandomMotivation() string {
+	return cons.MOTIVATION[rand.New(
+		rand.NewSource(
+			time.Now().Unix(),
+		),
+	).Intn(len(cons.MOTIVATION))]
 }

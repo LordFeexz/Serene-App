@@ -5,6 +5,7 @@ import (
 	"fmt"
 	cons "serene-app/constants"
 	"serene-app/exceptions"
+	h "serene-app/helpers"
 	"serene-app/pkg/history"
 	"serene-app/pkg/user"
 	"serene-app/web"
@@ -43,7 +44,7 @@ func (ctr *TestControllerImpl) MentalHealthResult(c *gin.Context) {
 
 	var result uint8 = 0
 	for _, val := range body.Result {
-		if !cons.ValidMentalHealthQuestion(val.Question) {
+		if !h.ValidMentalHealthQuestion(val.Question) {
 			ctr.AbortResponse(c, exceptions.NewError(fmt.Sprintf("pertanyaan '%s' tidak terdaftar", val.Question), 400))
 			return
 		}
@@ -53,7 +54,7 @@ func (ctr *TestControllerImpl) MentalHealthResult(c *gin.Context) {
 		}
 	}
 
-	messageResult := cons.GetMentalHealthResult(result)
+	messageResult := h.GetMentalHealthResult(result)
 	go ctr.historyRepo.Create(context.Background(), &history.History{
 		FeatureUsed: history.MENTAL_HEALTH_TEST,
 		Description: fmt.Sprintf("mental health test dengan hasil: '%s'", messageResult),
@@ -61,8 +62,11 @@ func (ctr *TestControllerImpl) MentalHealthResult(c *gin.Context) {
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 	})
-	//TODO if result > 7 get motivation
-	//ask mau di batasi ga per hari?
+	var motivation string
+	if result >= 7 {
+		motivation = h.GetRandomMotivation()
+	}
+	//ASK mau di batasi ga per hari?
 
-	ctr.WriteResponse(c, 200, messageResult, nil)
+	ctr.WriteResponse(c, 200, messageResult, motivation)
 }
