@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .container {
+            min-width: 400px;
+            width: 100%;
+            height: 300px;
+            background-color: rgb(238, 235, 218);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            margin: 10px
+        }
+
+        #body-message {
+            font-size: 20px;
+            text-align: center;
+        }
+
+        #button-confirm {
+            width: 150px;
+            height: 40px;
+            background-color: rgb(59, 152, 189);
+            border: 1px solid rgb(73, 73, 73);
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <img src="../public/assets/images/serene.png" />
+        <div style="display:flex; justify-content:center; flex-direction:column; align-items:center">
+            <p id="body-message">You’ve received this message because your email address has been registered with our
+                site. Please click
+                the
+                button below
+                to verify your email address and confirm that you are the owner of this account.
+                If you did not register with us, please disregard this email.
+            </p>
+            <button id="button-confirm">CONFIRM</button>
+        </div>
+
+    </div>
+</body>
+
+</html>
