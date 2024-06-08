@@ -48,19 +48,19 @@ func (ctr *UserControllerImpl) Register(c *gin.Context) {
 		}
 
 		if data.Email == body.Email {
-			ctr.AbortResponse(c, exceptions.NewError("email is already registered", 409))
+			ctr.AbortResponse(c, exceptions.NewError("email sudah terdaftar", 409))
 			return
 		}
 
 		if data.Username == body.Username {
-			ctr.AbortResponse(c, exceptions.NewError("username is already registered", 409))
+			ctr.AbortResponse(c, exceptions.NewError("username sudah terdaftar", 409))
 			return
 		}
 	}
 
 	hashed, err := h.Hash(body.Password)
 	if err != nil {
-		ctr.AbortResponse(c, exceptions.NewError("Failed to hash password", 500))
+		ctr.AbortResponse(c, exceptions.NewError("gagal melakukan hash password", 500))
 		return
 	}
 	data := user.User{Username: body.Username, Email: body.Email, Password: hashed, CreatedAt: time.Now(), UpdatedAt: time.Now(), IsVerified: false}
@@ -96,17 +96,17 @@ func (ctr *UserControllerImpl) Login(c *gin.Context) {
 		ctr.AbortResponse(c, err)
 		return
 	} else if err == sql.ErrNoRows {
-		ctr.AbortResponse(c, exceptions.NewError("invalid credentials", 401))
+		ctr.AbortResponse(c, exceptions.NewError("credentials tidak ditemukan", 401))
 		return
 	}
 
 	if !h.CompareHash(data.Password, body.Password) {
-		ctr.AbortResponse(c, exceptions.NewError("invalid credentials", 401))
+		ctr.AbortResponse(c, exceptions.NewError("credentials tidak ditemukan", 401))
 		return
 	}
 
 	if !data.IsVerified {
-		ctr.AbortResponse(c, exceptions.NewError("your account is not verified", 401))
+		ctr.AbortResponse(c, exceptions.NewError("akun mu belum di verifikasi", 401))
 		return
 	}
 
@@ -134,12 +134,12 @@ func (ctr *UserControllerImpl) ResendEmailVerification(c *gin.Context) {
 		ctr.AbortResponse(c, err)
 		return
 	} else if err == sql.ErrNoRows {
-		ctr.AbortResponse(c, exceptions.NewError("data not found", 404))
+		ctr.AbortResponse(c, exceptions.NewError("data tidak ditemukan", 404))
 		return
 	}
 
 	if data.IsVerified {
-		ctr.AbortResponse(c, exceptions.NewError("user is already verified", 409))
+		ctr.AbortResponse(c, exceptions.NewError("pengguna sudah diverifikasi", 409))
 		return
 	}
 

@@ -36,9 +36,12 @@ type HistoryControllerImpl struct {
 
 type TestController interface {
 	GetMentalHealthQuestion(c *gin.Context)
+	MentalHealthResult(c *gin.Context)
 }
 
 type TestControllerImpl struct {
 	web.ResponseWriter
-	validate *validator.Validate
+	validate    *validator.Validate
+	userService user.UserService
+	historyRepo history.HistoryRepo
 }

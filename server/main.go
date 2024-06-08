@@ -42,7 +42,7 @@ func main() {
 		md,
 		controllers.NewUserController(w, validate, userRepo, userService),
 		controllers.NewHistoryController(w, validate, userService, historyRepo),
-		controllers.NewTestController(w, validate),
+		controllers.NewTestController(w, validate, userService, historyRepo),
 	)(":" + port); err != nil {
 		log.Fatalf("application failed to start : %s", err.Error())
 	}

@@ -47,7 +47,7 @@ func (ctr *HistoryControllerImpl) GetMyHistory(c *gin.Context) {
 	for rows.Next() {
 		var data history.History
 		if err := rows.Scan(
-			&data.Id, &data.FeatureUser, &data.UserId, &data.CreatedAt, &data.UpdatedAt,
+			&data.Id, &data.FeatureUsed, &data.UserId, &data.CreatedAt, &data.UpdatedAt,
 		); err != nil && err != sql.ErrNoRows {
 			ctr.AbortResponse(c, err)
 			return
@@ -56,7 +56,7 @@ func (ctr *HistoryControllerImpl) GetMyHistory(c *gin.Context) {
 	}
 
 	if len(datas) < 1 {
-		ctr.AbortResponse(c, exceptions.NewError("data not found", 404))
+		ctr.AbortResponse(c, exceptions.NewError("data tidak ditemukan", 404))
 		return
 	}
 

@@ -1,0 +1,21 @@
+package constants
+
+func ValidMentalHealthQuestion(s string) bool {
+	for _, val := range MENTAL_HEALTH_QUESTIONS {
+		if val == s {
+			return true
+		}
+	}
+	return false
+}
+
+func GetMentalHealthResult(point uint8) string {
+	switch true {
+	case point <= 3:
+		return "Kesehatan Mental anda baik"
+	case point >= 4 && point <= 6:
+		return "Kesehatan mental anda perlu diperhatikan, gunakan fitur terapi untuk membantu merelaksasi diri anda"
+	default:
+		return "Segera cari bantuan"
+	}
+}

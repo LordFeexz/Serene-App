@@ -21,3 +21,12 @@ type DefaultPagination struct {
 	SortBy        string `form:"sort_by"`
 	SortDirection string `form:"sort_direction"`
 }
+
+type Answer struct {
+	Question   string `json:"question" form:"question" validate:"required"`
+	UserAnswer bool   `json:"answer" form:"answer"`
+}
+
+type MentalHealthAnswer struct {
+	Result []Answer `json:"result" form:"result" validate:"required,min=1"`
+}
