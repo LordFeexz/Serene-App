@@ -26,15 +26,17 @@ func (ctr *UserControllerImpl) Register(c *gin.Context) {
 		return
 	}
 
-	rows, err := ctr.userRepo.GetDb().QueryContext(
-		c.Request.Context(),
-		h.LogQuery(fmt.Sprintf(`SELECT s.id, s.username, s.email, s.is_verified, s.created_at, s.updated_at FROM "%s" s WHERE s.username = $1 OR s.email = $2`, user.TABLE_NAME)),
-		body.Username, body.Email,
-	)
+	rows, err := ctr.userRepo.GetDb().
+		QueryContext(
+			c.Request.Context(),
+			h.LogQuery(fmt.Sprintf(`SELECT s.id, s.username, s.email, s.is_verified, s.created_at, s.updated_at FROM "%s" s WHERE s.username = $1 OR s.email = $2`, user.TABLE_NAME)),
+			body.Username, body.Email,
+		)
 	if err != nil && err != sql.ErrNoRows {
 		ctr.AbortResponse(c, err)
 		return
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 		var data user.User
@@ -121,11 +123,12 @@ func (ctr *UserControllerImpl) ResendEmailVerification(c *gin.Context) {
 	}
 
 	var data user.User
-	if err := ctr.userRepo.GetDb().QueryRowContext(
-		c.Request.Context(),
-		h.LogQuery(fmt.Sprintf(`SELECT id, username, email, is_verified FROM "%s" WHERE email = $1`, user.TABLE_NAME)),
-		body.Email,
-	).Scan(
+	if err := ctr.userRepo.GetDb().
+		QueryRowContext(
+			c.Request.Context(),
+			h.LogQuery(fmt.Sprintf(`SELECT id, username, email, is_verified FROM "%s" WHERE email = $1`, user.TABLE_NAME)),
+			body.Email,
+		).Scan(
 		&data.Id, &data.Username, &data.Email, &data.IsVerified,
 	); err != nil && err != sql.ErrNoRows {
 		ctr.AbortResponse(c, err)

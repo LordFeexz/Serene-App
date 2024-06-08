@@ -2,6 +2,7 @@ package web
 
 import (
 	"fmt"
+	"log"
 	"serene-app/exceptions"
 
 	"github.com/gin-gonic/gin"
@@ -80,15 +81,18 @@ func (w *ResponseWriterImpl) getStatusMessage(status int) string {
 	return statusMessages[status]
 }
 
-func (w *ResponseWriterImpl) write(c *gin.Context, response WebResponse) {
+func (w *ResponseWriterImpl) write(c *gin.Context, response webResponse) {
 	response.Status = w.getStatusMessage(response.Code)
 	c.JSON(response.Code, response)
 }
 
 func (w *ResponseWriterImpl) AbortResponse(c *gin.Context, err error) {
 	msg, code := exceptions.GetErrorMsg(err)
+	if code == 500 {
+		log.Printf("unhandled error value : %s", err.Error())
+	}
 
-	c.AbortWithStatusJSON(code, WebResponse{
+	c.AbortWithStatusJSON(code, webResponse{
 		Status:  w.getStatusMessage(code),
 		Code:    code,
 		Message: msg,
@@ -96,7 +100,7 @@ func (w *ResponseWriterImpl) AbortResponse(c *gin.Context, err error) {
 }
 
 func (w *ResponseWriterImpl) WriteResponse(c *gin.Context, code int, msg string, data any) {
-	w.write(c, WebResponse{
+	w.write(c, webResponse{
 		code,
 		w.getStatusMessage(code),
 		msg,
@@ -123,7 +127,7 @@ func (w *ResponseWriterImpl) WriteValidationErrResponse(c *gin.Context, err erro
 		errMap[val.Field()] = w.validatorMsg(val)
 	}
 
-	c.AbortWithStatusJSON(400, WebResponse{
+	c.AbortWithStatusJSON(400, webResponse{
 		Status:  w.getStatusMessage(400),
 		Message: "validation error",
 		Code:    400,

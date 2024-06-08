@@ -10,7 +10,7 @@ type ResponseWriter interface {
 
 type ResponseWriterImpl struct{}
 
-type WebResponse struct {
+type webResponse struct {
 	Code    int    `json:"code"`
 	Status  string `json:"status"`
 	Message string `json:"message"`

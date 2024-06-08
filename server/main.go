@@ -8,6 +8,7 @@ import (
 	"serene-app/exceptions"
 	"serene-app/mail"
 	"serene-app/middlewares"
+	"serene-app/pkg/history"
 	"serene-app/pkg/user"
 	"serene-app/routes"
 	"serene-app/validator"
@@ -30,14 +31,16 @@ func main() {
 	mailer := mail.NewSender()
 
 	userRepo := user.NewRepo()
+	historyRepo := history.NewHistoryRepo()
 
 	userService := user.NewService(mailer)
 
 	md := middlewares.New(w, userRepo)
 	userController := controllers.NewUserController(w, validate, userRepo, userService)
+	historyController := controllers.NewHistoryController(w, validate, userService, historyRepo)
 
 	log.Printf("starting application on port %s", port)
-	if err := routes.NewRoutes(md, userController)(":" + port); err != nil {
+	if err := routes.NewRoutes(md, userController, historyController)(":" + port); err != nil {
 		log.Fatalf("application failed to start : %s", err.Error())
 	}
 }

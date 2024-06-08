@@ -3,13 +3,14 @@ package database
 import (
 	"database/sql"
 	"log"
+	"os"
 	"serene-app/exceptions"
 
 	_ "github.com/lib/pq"
 )
 
 func Conn() {
-	url := DATABASE_URL
+	url := os.Getenv("DATABASE_URL")
 	if url == "" {
 		url = "user=apple password=password dbname=serene-app sslmode=disable"
 	}

@@ -10,12 +10,14 @@ import (
 func NewRoutes(
 	md middlewares.Middlewares,
 	user controllers.UserController,
+	history controllers.HistoryController,
 ) func(addr ...string) error {
 	r := router{gin.Default()}
 	r.Use(gin.Recovery())
 
 	groupRoutes := r.Group("/api/v1")
 	r.userRoute(groupRoutes, user, md)
+	r.historyRoute(groupRoutes, history, md)
 
 	return r.Run
 }
