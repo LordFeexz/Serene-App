@@ -5,24 +5,43 @@ import ContainerLogo from "@/components/ContainerLogo";
 import CustomButton from "@/components/CustomButton";
 import FooterWithMenu from "@/components/FooterWithMenu";
 import Logo from "@/components/Logo";
+import Question from "@/components/Question";
 import { AntDesign } from "@expo/vector-icons";
+import { useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
+const mentalHealthQuestions = [
+  {
+    text: "Saya  sering sulit tidur atau tidur tidak berkualitas?",
+    choosen: false,
+  },
+  {
+    text: "Saya  sering merasa cepat lelah atau kelelahan?",
+    choosen: false,
+  },
+  {
+    text: "Saya  sulit untuk konsentrasi/fokus dalam mengerjakan sesuatu?",
+    choosen: false,
+  },
+  {
+    text: "Emosi saya cenderung tidak stabil dan sensitif",
+    choosen: false,
+  },
+];
 
 export default function mentalHealth() {
-  const questions = [
-    {
-      text: "Saya  sering sulit tidur atau tidur tidak berkualitas?",
-    },
-    {
-      text: "Saya  sering merasa cepat lelah atau kelelahan?",
-    },
-    {
-      text: "Saya  sulit untuk konsentrasi/fokus dalam mengerjakan sesuatu?",
-    },
-    {
-      text: "Emosi saya cenderung tidak stabil dan sensitif",
-    },
-  ];
+  const [questions, setQuestions] = useState(mentalHealthQuestions);
+
+  const handleSetQuestions = (answer: boolean, index: number) => {
+    setQuestions((prevQuestions) =>
+      prevQuestions.map((item, idx) =>
+        idx === index ? { ...item, choosen: answer } : item
+      )
+    );
+  };
+
+  const handleSubmit = () => {
+    console.log(questions);
+  };
   return (
     <Container>
       <ContainerLogo>
@@ -52,35 +71,12 @@ export default function mentalHealth() {
         <ScrollView style={{ marginTop: 10 }}>
           <View style={{ flex: 1 }}>
             {questions.map((item, index) => (
-              <View
-                style={{
-                  flex: 1,
-                  width: "100%",
-                  justifyContent: "center",
-                  margin: 2,
-                }}
+              <Question
+                item={item}
+                index={index}
                 key={index}
-              >
-                <Text
-                  style={{ fontWeight: "bold", marginLeft: 8, fontSize: 18 }}
-                >
-                  {item.text}
-                </Text>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-around",
-                    backgroundColor: "#B8E1F1",
-                    width: "100%",
-                    height: 50,
-                    borderRadius: 20,
-                    alignItems: "center",
-                  }}
-                >
-                  <Text>Yes</Text>
-                  <Text>No</Text>
-                </View>
-              </View>
+                handleSetQuestions={handleSetQuestions}
+              />
             ))}
 
             <View
@@ -101,7 +97,7 @@ export default function mentalHealth() {
                 }}
                 textStyle={{ fontSize: 20, color: "#B8E1F1" }}
                 text="Submit"
-                onPress={() => console.log("Submit")}
+                onPress={handleSubmit}
               />
             </View>
           </View>

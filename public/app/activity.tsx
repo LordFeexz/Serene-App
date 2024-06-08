@@ -4,8 +4,9 @@ import ContainerHead from "@/components/ContainerHead";
 import ContainerLogo from "@/components/ContainerLogo";
 import FooterWithMenu from "@/components/FooterWithMenu";
 import Logo from "@/components/Logo";
-import { Image, StyleSheet } from "react-native";
+import { Dimensions, Image, StyleSheet } from "react-native";
 export default function actiivity() {
+  const { width, height } = Dimensions.get("window");
   return (
     <Container>
       <ContainerLogo>
@@ -18,8 +19,8 @@ export default function actiivity() {
         }}
       >
         <Image
-          source={require("@/assets/images/activity-big.png")}
-          style={{ height: "200%", width: "50%" }}
+          source={require("@/assets/images/big-activity.png")}
+          style={{ height: (1.3 * height * 1) / 7, width: 0.3 * width }}
         />
       </ContainerHead>
       <ContainerBody></ContainerBody>

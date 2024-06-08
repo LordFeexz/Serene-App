@@ -9,9 +9,9 @@ export default function FooterWithMenu() {
         flexDirection: "row",
         justifyContent: "space-around",
         width: "100%",
-        padding: 10,
+        padding: 15,
         alignItems: "center",
-        gap: 5,
+        gap: 40,
       }}
     >
       <Pressable onPress={() => router.push("/submenu")}>

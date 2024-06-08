@@ -5,22 +5,53 @@ import ContainerLogo from "@/components/ContainerLogo";
 import FooterWithMenu from "@/components/FooterWithMenu";
 import Logo from "@/components/Logo";
 import { Link } from "expo-router";
-import { Image, Pressable, StyleSheet, View } from "react-native";
+import {
+  Dimensions,
+  Image,
+  Pressable,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export default function Index() {
+  const { width, height } = Dimensions.get("window");
   const imagesRoutes = [
     {
       component: (
-        <Image source={require("@/assets/images/mental-health.png")} />
+        <Image
+          source={require("@/assets/images/mental-health.png")}
+          style={{
+            height: (((1 / 7) * 85) / 100) * height,
+            width: 0.25 * width,
+          }}
+        />
       ),
       link: "/mental-health",
     },
     {
-      component: <Image source={require("@/assets/images/mood-test.png")} />,
+      component: (
+        <Image
+          source={require("@/assets/images/mood-test.png")}
+          style={{
+            height:
+              height > 700 ? (((1 / 7) * 80) / 100) * height : height / 7.6,
+            width: 0.22 * width,
+          }}
+        />
+      ),
       link: "/mood-test",
     },
     {
-      component: <Image source={require("@/assets/images/activity.png")} />,
+      component: (
+        <Image
+          source={require("@/assets/images/activity.png")}
+          style={{
+            height: (((1 / 7) * 80) / 100) * height,
+            width: 0.2 * width,
+          }}
+        />
+      ),
       link: "/activity",
     },
   ];
@@ -47,22 +78,15 @@ export default function Index() {
         style={{
           borderRadius: 30,
           flexDirection: "row",
+          justifyContent: "space-around",
+          alignItems: "center",
           padding: 5,
         }}
       >
         {imagesRoutes.map((item, index) => (
-          <View
-            key={index}
-            style={{
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Link href={item.link} asChild>
-              <Pressable>{item.component}</Pressable>
-            </Link>
-          </View>
+          <Link href={item.link} asChild key={index}>
+            <TouchableOpacity>{item.component}</TouchableOpacity>
+          </Link>
         ))}
       </ContainerHead>
       <ContainerBody
