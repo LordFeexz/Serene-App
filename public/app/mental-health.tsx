@@ -8,7 +8,7 @@ import Logo from "@/components/Logo";
 import Question from "@/components/Question";
 import { AntDesign } from "@expo/vector-icons";
 import { useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
 const mentalHealthQuestions = [
   {
     text: "Saya  sering sulit tidur atau tidur tidak berkualitas?",
@@ -30,7 +30,7 @@ const mentalHealthQuestions = [
 
 export default function mentalHealth() {
   const [questions, setQuestions] = useState(mentalHealthQuestions);
-
+  const { height } = Dimensions.get("window");
   const handleSetQuestions = (answer: boolean, index: number) => {
     setQuestions((prevQuestions) =>
       prevQuestions.map((item, idx) =>
@@ -62,7 +62,13 @@ export default function mentalHealth() {
           <AntDesign name="user" size={50} color="#3A8BC9" />
         </View>
         <View style={{ flex: 4 }}>
-          <Text style={{ fontSize: 24, textAlign: "center", color: "#1A4789" }}>
+          <Text
+            style={{
+              fontSize: height * 0.03,
+              textAlign: "center",
+              color: "#1A4789",
+            }}
+          >
             Halo Bagaimana perasaan anda hari ini?
           </Text>
         </View>

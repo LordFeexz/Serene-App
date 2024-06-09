@@ -8,7 +8,7 @@ export default function ContainerHead({
   return (
     <View
       style={{
-        flex: 1,
+        flex: style.flex || 1,
         backgroundColor: "#B8E1F1",
         borderRadius: 30,
         ...style,

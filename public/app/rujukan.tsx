@@ -5,7 +5,7 @@ import ContainerLogo from "@/components/ContainerLogo";
 import CustomButton from "@/components/CustomButton";
 import FooterWithMenu from "@/components/FooterWithMenu";
 import Logo from "@/components/Logo";
-import { Image, Text, View } from "react-native";
+import { Dimensions, Image, ScrollView, Text, View } from "react-native";
 
 function ClinicIcon() {
   return <Image source={require("@/assets/images/clinic.png")} />;
@@ -36,6 +36,7 @@ const clinicData = [
 ];
 
 export default function Rujukan() {
+  const { height } = Dimensions.get("window");
   return (
     <Container>
       <ContainerLogo>
@@ -55,29 +56,39 @@ export default function Rujukan() {
         >
           <Image
             source={require("@/assets/images/rujukan.png")}
-            style={{ width: 70, height: 70 }}
+            style={{ width: 70, height: 70, objectFit: "contain" }}
           />
         </View>
         <View style={{ flex: 4 }}>
-          <Text style={{ fontSize: 16, textAlign: "center", color: "#1A4789" }}>
+          <Text
+            style={{
+              fontSize: height * 0.02,
+              textAlign: "center",
+              color: "#1A4789",
+            }}
+          >
             Halo! Terimakasih telah menggunakan serene. berikut rujukan
             PSIKIATER yang dapat membantu anda
           </Text>
         </View>
       </ContainerHead>
-      <ContainerBody>
+      <ContainerBody
+        style={{
+          padding: 10,
+        }}
+      >
         <View
           style={{
             justifyContent: "flex-end",
             width: "100%",
             alignItems: "flex-end",
-            padding: 10,
           }}
         >
           <Text style={{ color: "#804861", fontWeight: "bold" }}>
             Berdasarkan lokasi terdekat
           </Text>
-
+        </View>
+        <ScrollView>
           {clinicData.map((clinic, index) => (
             <View
               style={{
@@ -85,6 +96,9 @@ export default function Rujukan() {
                 justifyContent: "space-between",
                 marginTop: 10,
                 gap: 5,
+                backgroundColor: "#B8E1F1",
+                borderRadius: 10,
+                padding: 5,
               }}
               key={index}
             >
@@ -106,10 +120,18 @@ export default function Rujukan() {
                   alignItems: "center",
                 }}
               >
-                <Text style={{ fontWeight: "bold", textAlign: "center" }}>
+                <Text
+                  style={{
+                    fontWeight: "bold",
+                    textAlign: "center",
+                    fontSize: height * 0.017,
+                  }}
+                >
                   {clinic.name}
                 </Text>
-                <Text style={{ textAlign: "center" }}>{clinic.address}</Text>
+                <Text style={{ textAlign: "center", fontSize: height * 0.015 }}>
+                  {clinic.address}
+                </Text>
               </View>
               <View
                 style={{
@@ -137,7 +159,7 @@ export default function Rujukan() {
               </View>
             </View>
           ))}
-        </View>
+        </ScrollView>
       </ContainerBody>
       <FooterWithMenu />
     </Container>

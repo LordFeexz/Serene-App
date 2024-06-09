@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Dimensions, Text, TouchableOpacity, View } from "react-native";
 import { Fontisto } from "@expo/vector-icons";
 export default function Question({
   item,
@@ -11,6 +11,7 @@ export default function Question({
   handleSetQuestions: (answer: boolean, index: number) => void;
 }) {
   const [active, setActive] = useState("null");
+  const { height } = Dimensions.get("window");
   const handlePress = (itemChoosen: string) => {
     if (itemChoosen === "yes") {
       setActive("yes");
@@ -27,11 +28,13 @@ export default function Question({
         flex: 1,
         width: "100%",
         justifyContent: "center",
-        margin: 2,
+        padding: 5,
       }}
       key={index}
     >
-      <Text style={{ fontWeight: "bold", marginLeft: 8, fontSize: 18 }}>
+      <Text
+        style={{ fontWeight: "bold", marginLeft: 8, fontSize: 0.023 * height }}
+      >
         {item.text}
       </Text>
       <View

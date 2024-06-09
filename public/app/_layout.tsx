@@ -30,6 +30,8 @@ export default function RootLayout() {
         <Stack.Screen name="submenu" />
         <Stack.Screen name="mental-health" />
         <Stack.Screen name="mood-test" />
+        <Stack.Screen name="suara" />
+        <Stack.Screen name="video" />
       </Stack>
     </ThemeProvider>
   );

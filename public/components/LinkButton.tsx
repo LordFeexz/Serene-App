@@ -7,7 +7,7 @@ export type Props = {
   textStyle: object;
   href: string;
 };
-export default function CustomButton({
+export default function LinkButton({
   text,
   textStyle = {},
   href,

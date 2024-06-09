@@ -16,6 +16,7 @@ export default function actiivity() {
         style={{
           justifyContent: "center",
           alignItems: "center",
+          objectFit: "contain",
         }}
       >
         <Image

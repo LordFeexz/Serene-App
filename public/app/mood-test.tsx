@@ -37,7 +37,10 @@ export default function moodTest() {
             padding: 2,
           }}
         >
-          <Image source={require("@/assets/images/mood-test.png")} />
+          <Image
+            source={require("@/assets/images/mood-test.png")}
+            style={{ objectFit: "contain" }}
+          />
         </View>
         <View style={{ flex: 4 }}>
           <Text style={{ fontSize: 16, textAlign: "center", color: "#1A4789" }}>

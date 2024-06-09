@@ -9,6 +9,7 @@ import {
   Dimensions,
   Image,
   Pressable,
+  ScrollView,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -24,6 +25,7 @@ export default function Index() {
           style={{
             height: (((1 / 7) * 85) / 100) * height,
             width: 0.25 * width,
+            objectFit: "contain",
           }}
         />
       ),
@@ -37,6 +39,7 @@ export default function Index() {
             height:
               height > 700 ? (((1 / 7) * 80) / 100) * height : height / 7.6,
             width: 0.22 * width,
+            objectFit: "contain",
           }}
         />
       ),
@@ -49,6 +52,7 @@ export default function Index() {
           style={{
             height: (((1 / 7) * 80) / 100) * height,
             width: 0.2 * width,
+            objectFit: "contain",
           }}
         />
       ),
@@ -81,6 +85,7 @@ export default function Index() {
           justifyContent: "space-around",
           alignItems: "center",
           padding: 5,
+          flex: height < 700 ? 1.2 : 1,
         }}
       >
         {imagesRoutes.map((item, index) => (
@@ -98,11 +103,23 @@ export default function Index() {
           alignItems: "center",
         }}
       >
-        {mainMenus.map((item, index) => (
-          <Link href={item.link} asChild key={index}>
-            <Pressable>{item.component}</Pressable>
-          </Link>
-        ))}
+        <ScrollView>
+          <View
+            style={{
+              flex: 1,
+              flexWrap: "wrap",
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {mainMenus.map((item, index) => (
+              <Link href={item.link} asChild key={index}>
+                <Pressable>{item.component}</Pressable>
+              </Link>
+            ))}
+          </View>
+        </ScrollView>
       </ContainerBody>
       <FooterWithMenu />
     </Container>
