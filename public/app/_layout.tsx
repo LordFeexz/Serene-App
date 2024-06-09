@@ -2,7 +2,6 @@ import { getItem } from "@/services/secureStore";
 import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { Stack } from "expo-router";
 import { useEffect } from "react";
-
 import { useRouter } from "expo-router";
 
 export default function RootLayout() {
@@ -29,9 +28,12 @@ export default function RootLayout() {
         <Stack.Screen name="index" />
         <Stack.Screen name="submenu" />
         <Stack.Screen name="mental-health" />
+        <Stack.Screen name="mental-health-result" />
         <Stack.Screen name="mood-test" />
         <Stack.Screen name="suara" />
         <Stack.Screen name="video" />
+        <Stack.Screen name="video-player" />
+        <Stack.Screen name="mood-test-result" />
       </Stack>
     </ThemeProvider>
   );

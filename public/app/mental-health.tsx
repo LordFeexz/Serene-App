@@ -7,6 +7,7 @@ import FooterWithMenu from "@/components/FooterWithMenu";
 import Logo from "@/components/Logo";
 import Question from "@/components/Question";
 import { AntDesign } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
 const mentalHealthQuestions = [
@@ -28,8 +29,9 @@ const mentalHealthQuestions = [
   },
 ];
 
-export default function mentalHealth() {
+export default function mentalHealth({ navigation }: { navigation: any }) {
   const [questions, setQuestions] = useState(mentalHealthQuestions);
+  const router = useRouter();
   const { height } = Dimensions.get("window");
   const handleSetQuestions = (answer: boolean, index: number) => {
     setQuestions((prevQuestions) =>
@@ -41,6 +43,7 @@ export default function mentalHealth() {
 
   const handleSubmit = () => {
     console.log(questions);
+    router.push({ pathname: "/mood-test-result", params: { score: 50 } });
   };
   return (
     <Container>

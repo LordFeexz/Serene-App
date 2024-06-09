@@ -5,10 +5,29 @@ import ContainerLogo from "@/components/ContainerLogo";
 import CustomButton from "@/components/CustomButton";
 import FooterWithMenu from "@/components/FooterWithMenu";
 import Logo from "@/components/Logo";
+import { useRouter } from "expo-router";
 import { Dimensions, Image, Text, View } from "react-native";
 
 export default function video() {
+  const router = useRouter();
+  const therapyVideos = [
+    {
+      therapyName: "Yoga",
+      videoId: "S-rB0pHI9fU",
+    },
+    {
+      therapyName: "ASMR",
+      videoId: "S-rB0pHI9fU",
+    },
+    {
+      therapyName: "RELAKSASI PERNAFASAN",
+      videoId: "S-rB0pHI9fU",
+    },
+  ];
   const { width, height } = Dimensions.get("window");
+  const handleRoute = (vidId: string) => {
+    router.push({ pathname: "video-player", params: { vidId: vidId } });
+  };
   return (
     <Container>
       <ContainerLogo>
@@ -138,57 +157,26 @@ export default function video() {
               gap: 20,
             }}
           >
-            <CustomButton
-              containerStyle={{
-                backgroundColor: "#4DA4E0",
-                width: "80%",
-                padding: 10,
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 10,
-              }}
-              onPress={() => console.log("Yoga")}
-              text="Yoga"
-              textStyle={{
-                color: "#1A4789",
-                fontWeight: "bold",
-                fontSize: width * 0.05,
-              }}
-            />
-            <CustomButton
-              containerStyle={{
-                backgroundColor: "#4DA4E0",
-                width: "80%",
-                padding: 10,
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 10,
-              }}
-              onPress={() => console.log("ASMR")}
-              text="ASMR"
-              textStyle={{
-                color: "#1A4789",
-                fontWeight: "bold",
-                fontSize: width * 0.05,
-              }}
-            />
-            <CustomButton
-              containerStyle={{
-                backgroundColor: "#4DA4E0",
-                width: "80%",
-                padding: 10,
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 10,
-              }}
-              onPress={() => console.log("Relaksasi pernafasan")}
-              text="RELAKSASI PERNAFASAN"
-              textStyle={{
-                color: "#1A4789",
-                fontWeight: "bold",
-                fontSize: width * 0.05,
-              }}
-            />
+            {therapyVideos.map((item, index) => (
+              <CustomButton
+                key={index}
+                containerStyle={{
+                  backgroundColor: "#4DA4E0",
+                  width: "80%",
+                  padding: 10,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: 10,
+                }}
+                onPress={() => handleRoute(item.videoId)}
+                text={item.therapyName}
+                textStyle={{
+                  color: "#1A4789",
+                  fontWeight: "bold",
+                  fontSize: width * 0.05,
+                }}
+              />
+            ))}
           </View>
         </View>
       </ContainerBody>

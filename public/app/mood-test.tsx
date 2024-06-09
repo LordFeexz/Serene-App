@@ -1,12 +1,51 @@
 import Container from "@/components/Container";
+import ContainerBody from "@/components/ContainerBody";
 import ContainerHead from "@/components/ContainerHead";
 import ContainerLogo from "@/components/ContainerLogo";
+import CustomButton from "@/components/CustomButton";
 import FooterWithMenu from "@/components/FooterWithMenu";
 import Logo from "@/components/Logo";
-import { Dimensions, Image, Text, View } from "react-native";
-
+import { Dimensions, Image, Text, TouchableOpacity, View } from "react-native";
 export default function moodTest() {
   const { width } = Dimensions.get("window");
+  const moods = [
+    {
+      imgSource: require("@/assets/images/emoticons/malu.png"),
+      text: "Calm",
+    },
+    {
+      imgSource: require("@/assets/images/emoticons/seneng.png"),
+      text: "Happy",
+    },
+    {
+      imgSource: require("@/assets/images/emoticons/gusar.png"),
+      text: "Sad",
+    },
+    {
+      imgSource: require("@/assets/images/emoticons/kelip.png"),
+      text: "Energetic",
+    },
+    {
+      imgSource: require("@/assets/images/emoticons/ngantuk.png"),
+      text: "Low Energy",
+    },
+    {
+      imgSource: require("@/assets/images/emoticons/nesu.png"),
+      text: "Angry",
+    },
+    {
+      imgSource: require("@/assets/images/emoticons/puyeng.png"),
+      text: "Confused",
+    },
+    {
+      imgSource: require("@/assets/images/emoticons/melet.png"),
+      text: "Frisky",
+    },
+    {
+      imgSource: require("@/assets/images/emoticons/hoeh.png"),
+      text: "Anxious",
+    },
+  ];
   return (
     <Container>
       <ContainerLogo>
@@ -49,7 +88,38 @@ export default function moodTest() {
           </Text>
         </View>
       </ContainerHead>
-      <View style={{ flex: 5 }}></View>
+      <ContainerBody
+        style={{
+          padding: 10,
+          flexDirection: "row",
+          flexWrap: "wrap",
+          gap: 10,
+          justifyContent: "center",
+        }}
+      >
+        {moods.map((mood, index) => (
+          <TouchableOpacity
+            key={index}
+            style={{
+              flexDirection: "row",
+              backgroundColor: "#3A8BC9",
+              padding: 15,
+              margin: 10,
+              width: mood.text === "Low Energy" ? width * 0.6 : width * 0.4,
+              justifyContent: "center",
+              alignSelf: "center",
+              gap: 10,
+              borderRadius: 20,
+            }}
+          >
+            <Image
+              source={mood.imgSource}
+              style={{ width: 0.05 * width, height: 0.05 * width }}
+            />
+            <Text>{mood.text}</Text>
+          </TouchableOpacity>
+        ))}
+      </ContainerBody>
       <FooterWithMenu />
     </Container>
   );
