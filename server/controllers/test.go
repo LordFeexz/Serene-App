@@ -68,5 +68,8 @@ func (ctr *TestControllerImpl) MentalHealthResult(c *gin.Context) {
 	}
 	//ASK mau di batasi ga per hari?
 
-	ctr.WriteResponse(c, 200, messageResult, motivation)
+	ctr.WriteResponse(c, 200, messageResult, map[string]any{
+		"motivation": motivation,
+		"result":     result,
+	})
 }
