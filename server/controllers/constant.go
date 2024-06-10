@@ -64,6 +64,7 @@ type MoodControllerImpl struct {
 
 type AssetController interface {
 	GetEmoteByName(c *gin.Context)
+	GetAllTherapyVideo(c *gin.Context)
 }
 
 type AssetControllerImpl struct {

@@ -22,12 +22,12 @@ _Response (201 - SUCCESS)_
   "code": "integer",
   "message": "string",
   "data": {
-    "id":"string",
-    "username":"string"
-    "email":"string",
-    "is_verified":"boolean",
-    "created_at":"date",
-    "updated_at":"date"
+    "id": "string",
+    "username": "string",
+    "email": "string",
+    "is_verified": "boolean",
+    "created_at": "date",
+    "updated_at": "date"
   }
 }
 ```

@@ -8,5 +8,6 @@ import (
 
 func (r *router) assetRoute(rg *gin.RouterGroup, asset controllers.AssetController) {
 	rg.Group("/assets").
-		GET("/emote/:name", asset.GetEmoteByName)
+		GET("/emote/:name", asset.GetEmoteByName).
+		GET("/therapy-video", asset.GetAllTherapyVideo)
 }

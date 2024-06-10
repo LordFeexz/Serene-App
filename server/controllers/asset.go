@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	cons "serene-app/constants"
 	h "serene-app/helpers"
 	"serene-app/web"
 
@@ -20,4 +21,8 @@ func (ctr *AssetControllerImpl) GetEmoteByName(c *gin.Context) {
 	}
 
 	c.File(filename)
+}
+
+func (ctr *AssetControllerImpl) GetAllTherapyVideo(c *gin.Context) {
+	ctr.WriteResponse(c, 200, "OK", cons.THERAPY_VIDEOS)
 }
