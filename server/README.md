@@ -304,6 +304,34 @@ _Response (400 - BAD REQUEST)_
 }
 ```
 
+_Response (201 - CREATED)_
+
+```json
+{
+  "status": "string",
+  "code": "integer",
+  "message": "string",
+  "data": {
+    "id": "integer",
+    "user_id": "string",
+    "mood_id": "integer",
+    "date": "string/date",
+    "created_at": "string/date",
+    "updated_at": "string/date"
+  }
+}
+```
+
+_Response (409 - Conflict)_
+
+```json
+{
+  "status": "string",
+  "code": "integer",
+  "message": "string"
+}
+```
+
 # History Endpoint
 
 #### Get My History List

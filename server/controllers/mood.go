@@ -124,7 +124,7 @@ func (ctr *MoodControllerImpl) AddTodayMood(c *gin.Context) {
 				fmt.Sprintf(
 					"kamu sudah menambahkan mood untuk tanggal %d-%02d-%02d", date.Year(), date.Month(), date.Day(),
 				),
-				400,
+				409,
 			),
 		)
 		return
