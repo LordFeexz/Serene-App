@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"serene-app/pkg/history"
+	"serene-app/pkg/mood"
 	"serene-app/pkg/user"
 	"serene-app/web"
 
@@ -44,4 +45,25 @@ type TestControllerImpl struct {
 	validate    *validator.Validate
 	userService user.UserService
 	historyRepo history.HistoryRepo
+}
+
+type MoodController interface {
+	GetListMood(c *gin.Context)
+}
+
+type MoodControllerImpl struct {
+	web.ResponseWriter
+	validate    *validator.Validate
+	userService user.UserService
+	historyRepo history.HistoryRepo
+	moodRepo    mood.MoodRepo
+}
+
+type AssetController interface {
+	GetEmoteByName(c *gin.Context)
+}
+
+type AssetControllerImpl struct {
+	web.ResponseWriter
+	validate *validator.Validate
 }
