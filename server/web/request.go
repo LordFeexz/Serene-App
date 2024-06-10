@@ -30,3 +30,8 @@ type Answer struct {
 type MentalHealthAnswer struct {
 	Result []Answer `json:"result" form:"result" validate:"required,min=1"`
 }
+
+type AddTodayMoodProps struct {
+	Date     string `json:"date" form:"date" default:"today"`
+	MoodName string `json:"mood_name" form:"mood_name" validate:"required,oneof=Calm Happy Sad Energetic 'Low energy' Angry Confused Frisky Anxious"`
+}

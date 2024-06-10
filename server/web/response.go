@@ -113,9 +113,11 @@ func (w *ResponseWriterImpl) validatorMsg(f validator.FieldError) string {
 	case "required":
 		return fmt.Sprintf("%s is required", f.Field())
 	case "email":
-		return "invalid email format"
+		return "format email invalid"
 	case "password":
-		return "password must include upper case,lower case, number, and symbol"
+		return "password harus memiliki huruf besar, huruf kecil, angka, dan symbol"
+	case "oneof":
+		return fmt.Sprintf("%s harus berupa salah satu diantara %s", f.Field(), f.Param())
 	default:
 		return f.Error()
 	}

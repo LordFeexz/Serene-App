@@ -276,6 +276,34 @@ _Response (200 - OK)_
 }
 ```
 
+#### Create Today Mood
+
+```http
+  Post /mood
+```
+
+| Headers         | Type     | Description   |
+| :-------------- | :------- | :------------ |
+| `authorization` | `string` | **Required**. |
+
+| Body        | Type          | Description   |
+| :---------- | :------------ | :------------ |
+| `date`      | `string/date` | **Optional**. |
+| `mood_name` | `string`      | **Required**. |
+
+_Response (400 - BAD REQUEST)_
+
+```json
+{
+  "status": "string",
+  "code": "integer",
+  "message": "string",
+  "data": {
+    "MoodName": "string"
+  }
+}
+```
+
 # History Endpoint
 
 #### Get My History List

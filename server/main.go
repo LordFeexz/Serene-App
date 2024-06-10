@@ -11,6 +11,7 @@ import (
 	"serene-app/pkg/history"
 	"serene-app/pkg/mood"
 	"serene-app/pkg/user"
+	usermood "serene-app/pkg/user_mood"
 	"serene-app/routes"
 	"serene-app/validator"
 	"serene-app/web"
@@ -34,6 +35,7 @@ func main() {
 	userRepo := user.NewRepo()
 	historyRepo := history.NewHistoryRepo()
 	moodRepo := mood.NewMoodRepo()
+	userMoodRepo := usermood.NewUserMoodRepo()
 
 	userService := user.NewService(mailer)
 
@@ -46,7 +48,7 @@ func main() {
 		controllers.NewHistoryController(w, validate, userService, historyRepo),
 		controllers.NewTestController(w, validate, userService, historyRepo),
 		controllers.NewAssetRoute(w, validate),
-		controllers.NewMoodController(w, validate, userService, historyRepo, moodRepo),
+		controllers.NewMoodController(w, validate, userService, historyRepo, moodRepo, userMoodRepo),
 	)(":" + port); err != nil {
 		log.Fatalf("application failed to start : %s", err.Error())
 	}

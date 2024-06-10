@@ -4,6 +4,7 @@ import (
 	"serene-app/pkg/history"
 	"serene-app/pkg/mood"
 	"serene-app/pkg/user"
+	usermood "serene-app/pkg/user_mood"
 	"serene-app/web"
 
 	"github.com/gin-gonic/gin"
@@ -49,14 +50,16 @@ type TestControllerImpl struct {
 
 type MoodController interface {
 	GetListMood(c *gin.Context)
+	AddTodayMood(c *gin.Context)
 }
 
 type MoodControllerImpl struct {
 	web.ResponseWriter
-	validate    *validator.Validate
-	userService user.UserService
-	historyRepo history.HistoryRepo
-	moodRepo    mood.MoodRepo
+	validate     *validator.Validate
+	userService  user.UserService
+	historyRepo  history.HistoryRepo
+	moodRepo     mood.MoodRepo
+	userMoodRepo usermood.UserMoodRepo
 }
 
 type AssetController interface {
