@@ -43,7 +43,7 @@ export default function mentalHealth({ navigation }: { navigation: any }) {
 
   const handleSubmit = () => {
     console.log(questions);
-    router.push({ pathname: "/mood-test-result", params: { score: 50 } });
+    router.push({ pathname: "/mental-health-result", params: { score: 50 } });
   };
   return (
     <Container>
