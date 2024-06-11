@@ -20,4 +20,5 @@ const (
 	MENTAL_HEALTH_TEST feature = "Tes Mental Health"
 	ADD_MOOD           feature = "Menambahkan mood hari ini"
 	GET_VIDEO_THERAPY  feature = "Membuka fitur video relaksasi"
+	GET_NEARBY_CLINIC  feature = "Membuka fitur rujukan"
 )
