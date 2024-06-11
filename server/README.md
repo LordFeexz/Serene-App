@@ -450,3 +450,88 @@ _Response (200 - OK)_
   }
 }
 ```
+
+# Location Endpoint
+
+#### Get Nearby Clinic
+
+```http
+  Get /location/clinic
+```
+
+| Headers         | Type     | Description   |
+| :-------------- | :------- | :------------ |
+| `authorization` | `string` | **Required**. |
+
+| Query        | Type      | Description                               |
+| :----------- | :-------- | :---------------------------------------- |
+| `lat`        | `float`   | **Required**.                             |
+| `lng`        | `float`   | **Required**.                             |
+| `radius`     | `integer` | **Optional**. (Default 5Km)               |
+| `page_token` | `string`  | **Optional**. (Get From Previous Request) |
+
+_Response (400 - Bad Request)_
+
+```json
+{
+  "status": "string",
+  "code": "integer",
+  "message": "string",
+  "data": {
+    "Latitude": "string",
+    "Longitude": "string"
+  }
+}
+```
+
+_Response (200 - OK)_
+
+```json
+{
+  "status": "string",
+  "code": "integer",
+  "message": "string",
+  "data": {
+    "next_page_token": "string",
+    "clinics": [
+      {
+        "id": "string",
+        "place_id": "string",
+        "name": "string",
+        "icon": "string",
+        "rating": "float",
+        "vicinity": "string",
+        "geometry": {
+          "location": {
+            "lat": "float",
+            "lng": "float"
+          },
+          "location_type": "string",
+          "bounds": {
+            "northeast": {
+              "lat": "float",
+              "lng": "float"
+            },
+            "southwest": {
+              "lat": "float",
+              "lng": "float"
+            }
+          },
+          "viewport": {
+            "northeast": {
+              "lat": "float",
+              "lng": "float"
+            },
+            "southwest": {
+              "lat": "float",
+              "lng": "float"
+            }
+          },
+          "types": null
+        }
+      }
+    ],
+    ...
+  }
+}
+```

@@ -35,3 +35,10 @@ type AddTodayMoodProps struct {
 	Date     string `json:"date" form:"date" default:"today"`
 	MoodName string `json:"mood_name" form:"mood_name" validate:"required,oneof=Calm Happy Sad Energetic 'Low energy' Angry Confused Frisky Anxious"`
 }
+
+type LocationQuery struct {
+	Latitude  float64 `form:"lat" binding:"required" validate:"required"`
+	Longitude float64 `form:"lng" binding:"required" validate:"required"`
+	Radius    uint    `form:"radius" binding:"required"`
+	PageToken string  `form:"page_token" binding:"required"`
+}

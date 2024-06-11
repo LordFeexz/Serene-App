@@ -6,6 +6,7 @@ import (
 	"serene-app/controllers"
 	"serene-app/database"
 	"serene-app/exceptions"
+	"serene-app/libs"
 	"serene-app/mail"
 	"serene-app/middlewares"
 	"serene-app/pkg/history"
@@ -28,6 +29,9 @@ func main() {
 		port = "3001"
 	}
 
+	gmaps, err := libs.StartGmap()
+	exceptions.PanicIfError(err)
+
 	validate := validator.New()
 	w := web.NewResponseWriter()
 	mailer := mail.NewSender()
@@ -49,6 +53,7 @@ func main() {
 		controllers.NewTestController(w, validate, userService, historyRepo),
 		controllers.NewAssetRoute(w, validate, historyRepo, userService),
 		controllers.NewMoodController(w, validate, userService, historyRepo, moodRepo, userMoodRepo),
+		controllers.NewLocationController(w, validate, gmaps, historyRepo, userService),
 	)(":" + port); err != nil {
 		log.Fatalf("application failed to start : %s", err.Error())
 	}

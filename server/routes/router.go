@@ -14,6 +14,7 @@ func NewRoutes(
 	test controllers.TestController,
 	asset controllers.AssetController,
 	mood controllers.MoodController,
+	location controllers.LocationController,
 ) func(addr ...string) error {
 	r := router{gin.Default()}
 	r.Use(gin.Recovery())
@@ -24,6 +25,7 @@ func NewRoutes(
 	r.testRoute(groupRoutes, test, md)
 	r.assetRoute(groupRoutes, asset, md)
 	r.moodRoute(groupRoutes, mood, md)
+	r.locationRoute(groupRoutes, location, md)
 
 	return r.Run
 }

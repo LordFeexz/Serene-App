@@ -1,5 +1,7 @@
 package web
 
+import "serene-app/exceptions"
+
 func (d *DefaultPagination) SetDefault() {
 	if d.Page == 0 {
 		d.Page = 1
@@ -27,4 +29,15 @@ func (ans *MentalHealthAnswer) HasDuplicateQuestion() bool {
 		questionMap[answer.Question] = true
 	}
 	return false
+}
+
+func (loc *LocationQuery) ValidateRadius() error {
+	if loc.Radius > 20000 {
+		return exceptions.NewError("maksimal radius adalah 20 km", 413)
+	}
+
+	if loc.Radius == 0 {
+		loc.Radius = 5000
+	}
+	return nil
 }

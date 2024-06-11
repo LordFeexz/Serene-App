@@ -14,7 +14,12 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-func NewAssetRoute(w web.ResponseWriter, v *validator.Validate, historyRepo history.HistoryRepo, userService user.UserService) AssetController {
+func NewAssetRoute(
+	w web.ResponseWriter,
+	v *validator.Validate,
+	historyRepo history.HistoryRepo,
+	userService user.UserService,
+) AssetController {
 	return &AssetControllerImpl{w, v, historyRepo, userService}
 }
 

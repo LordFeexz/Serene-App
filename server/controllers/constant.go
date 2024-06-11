@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"serene-app/libs"
 	"serene-app/pkg/history"
 	"serene-app/pkg/mood"
 	"serene-app/pkg/user"
@@ -71,6 +72,18 @@ type AssetController interface {
 type AssetControllerImpl struct {
 	web.ResponseWriter
 	validate    *validator.Validate
+	historyRepo history.HistoryRepo
+	userService user.UserService
+}
+
+type LocationController interface {
+	NearByClinic(c *gin.Context)
+}
+
+type LocationControllerImpl struct {
+	web.ResponseWriter
+	validate    *validator.Validate
+	gmaps       libs.Gmaps
 	historyRepo history.HistoryRepo
 	userService user.UserService
 }
