@@ -22,7 +22,7 @@ func NewRoutes(
 	r.userRoute(groupRoutes, user, md)
 	r.historyRoute(groupRoutes, history, md)
 	r.testRoute(groupRoutes, test, md)
-	r.assetRoute(groupRoutes, asset)
+	r.assetRoute(groupRoutes, asset, md)
 	r.moodRoute(groupRoutes, mood, md)
 
 	return r.Run

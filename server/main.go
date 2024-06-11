@@ -47,7 +47,7 @@ func main() {
 		controllers.NewUserController(w, validate, userRepo, userService),
 		controllers.NewHistoryController(w, validate, userService, historyRepo),
 		controllers.NewTestController(w, validate, userService, historyRepo),
-		controllers.NewAssetRoute(w, validate),
+		controllers.NewAssetRoute(w, validate, historyRepo, userService),
 		controllers.NewMoodController(w, validate, userService, historyRepo, moodRepo, userMoodRepo),
 	)(":" + port); err != nil {
 		log.Fatalf("application failed to start : %s", err.Error())

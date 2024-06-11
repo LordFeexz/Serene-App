@@ -393,3 +393,60 @@ _Response (404 - Not Found)_
 ```txt
   return file
 ```
+
+#### Get Therapy Video List
+
+```http
+  Get /assets/therapy-video
+```
+
+| Headers         | Type     | Description   |
+| :-------------- | :------- | :------------ |
+| `authorization` | `string` | **Required**. |
+
+_Response (200 - OK)_
+
+```json
+{
+  "status": "string",
+  "code": "integer",
+  "message": "string",
+  "data": [
+        {
+            "title": "string",
+            "url": "string",
+            "v": "string"
+        },
+        ...
+      ]
+}
+```
+
+#### Get One Therapy Video
+
+```http
+  Get /assets/therapy-video/:v
+```
+
+| Headers         | Type     | Description   |
+| :-------------- | :------- | :------------ |
+| `authorization` | `string` | **Required**. |
+
+| Params | Type     | Description   |
+| :----- | :------- | :------------ |
+| `v`    | `string` | **Required**. |
+
+_Response (200 - OK)_
+
+```json
+{
+  "status": "string",
+  "code": "integer",
+  "message": "string",
+  "data": {
+    "title": "string",
+    "url": "string",
+    "v": "string"
+  }
+}
+```

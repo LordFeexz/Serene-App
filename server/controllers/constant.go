@@ -65,9 +65,12 @@ type MoodControllerImpl struct {
 type AssetController interface {
 	GetEmoteByName(c *gin.Context)
 	GetAllTherapyVideo(c *gin.Context)
+	GetOneTheraphyVideo(c *gin.Context)
 }
 
 type AssetControllerImpl struct {
 	web.ResponseWriter
-	validate *validator.Validate
+	validate    *validator.Validate
+	historyRepo history.HistoryRepo
+	userService user.UserService
 }
