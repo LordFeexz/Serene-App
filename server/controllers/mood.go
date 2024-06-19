@@ -235,8 +235,7 @@ func (ctr *MoodControllerImpl) GetMyMood(c *gin.Context) {
 
 	var results []map[string]any
 	for i := 1; i <= endOfMonth.Day(); i++ {
-		currentDate := time.Date(int(query.Year), time.Month(query.Month), i, 0, 0, 0, 0, time.Local)
-		dateStr := currentDate.Format("2006-01-02")
+		dateStr := time.Date(int(query.Year), time.Month(query.Month), i, 0, 0, 0, 0, time.Local).Format("2006-01-02") //current date
 		if data, exists := datas[dateStr]; exists {
 			results = append(results, data)
 		} else {
