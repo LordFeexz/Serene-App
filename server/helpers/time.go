@@ -45,3 +45,11 @@ func ParseStrToDate(inp string) (time.Time, error) {
 func IsAfter(source, dest time.Time) bool {
 	return source.After(dest)
 }
+
+func StartOfMonth(t time.Time) time.Time {
+	return time.Date(t.Year(), t.Month(), 1, 0, 0, 0, 0, t.Location())
+}
+
+func EndOfMonth(t time.Time) time.Time {
+	return t.AddDate(0, 1, 0).Add(-time.Second)
+}

@@ -42,3 +42,8 @@ type LocationQuery struct {
 	Radius    uint    `form:"radius" binding:"required"`
 	PageToken string  `form:"page_token" binding:"required"`
 }
+
+type UserMoodQuery struct {
+	Month uint16 `form:"month" binding:"required"`
+	Year  uint16 `form:"year" binding:"required"`
+}

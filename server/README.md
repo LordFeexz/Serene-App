@@ -527,7 +527,8 @@ _Response (200 - OK)_
               "lng": "float"
             }
           },
-          "types": null
+          "types": null,
+          "distance":"string"
         }
       }
     ],

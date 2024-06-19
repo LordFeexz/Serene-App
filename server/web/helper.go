@@ -1,6 +1,9 @@
 package web
 
-import "serene-app/exceptions"
+import (
+	"serene-app/exceptions"
+	"time"
+)
 
 func (d *DefaultPagination) SetDefault() {
 	if d.Page == 0 {
@@ -40,4 +43,14 @@ func (loc *LocationQuery) ValidateRadius() error {
 		loc.Radius = 5000
 	}
 	return nil
+}
+
+func (q *UserMoodQuery) Default() {
+	if q.Month == 0 {
+		q.Month = uint16(time.Now().Month())
+	}
+
+	if q.Year == 0 {
+		q.Year = uint16(time.Now().Year())
+	}
 }

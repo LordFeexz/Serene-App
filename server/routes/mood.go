@@ -11,5 +11,6 @@ func (r *router) moodRoute(rg *gin.RouterGroup, mood controllers.MoodController,
 	rg.Group("/mood").
 		Use(md.Authentication).
 		GET("/", mood.GetListMood).
+		GET("/me", mood.GetMyMood).
 		POST("/", mood.AddTodayMood)
 }

@@ -175,3 +175,83 @@ func (ctr *MoodControllerImpl) AddTodayMood(c *gin.Context) {
 
 	ctr.WriteResponse(c, 201, "Success", data)
 }
+func (ctr *MoodControllerImpl) GetMyMood(c *gin.Context) {
+	var query web.UserMoodQuery
+	c.ShouldBindQuery(&query)
+	query.Default()
+
+	date := time.Date(int(query.Year), time.Month(query.Month), 1, 0, 0, 0, 0, time.Local)
+	endOfMonth := h.EndOfMonth(date)
+
+	rows, err := ctr.userMoodRepo.GetDb().QueryContext(
+		c.Request.Context(),
+		h.LogQuery(
+			fmt.Sprintf(`
+			SELECT 
+			um.id, um.user_id, um.mood_id, um.date, um.created_at, um.updated_at, m.name as mood_name
+			FROM %s um
+			LEFT JOIN %s m ON um.mood_id = m.id
+			WHERE um.user_id = $1 AND ( um.created_at BETWEEN $2 AND $3 )
+			`, usermood.TABLE_NAME, mood.TABLE_NAME),
+		),
+		ctr.userService.GetUserFromRequestCtx(c).Id,
+		h.StartOfMonth(date),
+		endOfMonth,
+	)
+	if err != nil {
+		ctr.AbortResponse(c, err)
+		return
+	}
+	defer rows.Close()
+
+	datas := make(map[string]map[string]interface{})
+	baseUrl := h.GetEnvOrDefault("BASE_URL", "http://localhost:3001/api/v1") + "/assets/emote"
+	for rows.Next() {
+		var id, userId, moodId, createdAt, UpdatedAt, name any
+		var date time.Time
+		if err := rows.Scan(
+			&id,
+			&userId,
+			&moodId,
+			&date,
+			&createdAt,
+			&UpdatedAt,
+			&name,
+		); err != nil {
+			ctr.AbortResponse(c, err)
+			return
+		}
+		datas[date.Format("2006-01-02")] = map[string]any{
+			"id":         id,
+			"user_id":    userId,
+			"mood_id":    moodId,
+			"date":       date,
+			"created_at": createdAt,
+			"updated_at": UpdatedAt,
+			"name":       name,
+			"image_url":  baseUrl + "/" + cons.EMOTENAMEMAP[name.(string)],
+		}
+	}
+
+	var results []map[string]any
+	for i := 1; i <= endOfMonth.Day(); i++ {
+		currentDate := time.Date(int(query.Year), time.Month(query.Month), i, 0, 0, 0, 0, time.Local)
+		dateStr := currentDate.Format("2006-01-02")
+		if data, exists := datas[dateStr]; exists {
+			results = append(results, data)
+		} else {
+			results = append(results, map[string]any{
+				"id":         nil,
+				"user_id":    nil,
+				"mood_id":    nil,
+				"date":       dateStr,
+				"name":       nil,
+				"image_url":  nil,
+				"created_at": nil,
+				"updated_at": nil,
+			})
+		}
+	}
+
+	ctr.WriteResponse(c, 200, "OK", results)
+}
