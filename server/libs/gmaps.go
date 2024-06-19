@@ -2,6 +2,7 @@ package libs
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"serene-app/exceptions"
 
@@ -30,9 +31,11 @@ func (g *GmapsImpl) NearbyClinic(ctx context.Context, lat, lng float64, radius u
 		PageToken: pageToken,
 	})
 	if err != nil {
+		err = exceptions.NewError("gagal mendapat data klinik terdekat", 502)
 		return
 	}
 
+	destinations := make([]string, 0)
 	for _, result := range resp.Results {
 		datas = append(datas, LocationSearchResult{
 			Id:       result.ID,
@@ -43,11 +46,25 @@ func (g *GmapsImpl) NearbyClinic(ctx context.Context, lat, lng float64, radius u
 			Vicinity: result.Vicinity,
 			Geometry: result.Geometry,
 		})
+		destinations = append(destinations, fmt.Sprintf("%f,%f", result.Geometry.Location.Lat, result.Geometry.Location.Lng))
 	}
 
 	if len(datas) < 1 {
 		err = exceptions.NewError("tidak ada data klinik terdekat", 404)
 		return
+	}
+
+	distanceMatrixResponse, err := g.DistanceMatrix(ctx, &maps.DistanceMatrixRequest{
+		Origins:      []string{fmt.Sprintf("%f,%f", lat, lng)},
+		Destinations: destinations,
+	})
+	if err != nil {
+		err = exceptions.NewError("gagal menghitung jarak klinik", 502)
+		return
+	}
+
+	for i, element := range distanceMatrixResponse.Rows[0].Elements {
+		datas[i].Distance = element.Distance.HumanReadable
 	}
 
 	nextPage = resp.NextPageToken

@@ -15,7 +15,6 @@ func GetEmotImg(name string) (string, error) {
 
 	filename, exists := cons.EMOTEMAP[name]
 	if !exists {
-		println("18")
 		return "", exceptions.NewError("emote tidak ditemukan", 404)
 	}
 

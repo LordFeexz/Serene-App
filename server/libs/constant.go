@@ -20,4 +20,5 @@ type LocationSearchResult struct {
 	Rating   float32              `json:"rating"`
 	Vicinity string               `json:"vicinity"`
 	Geometry maps.AddressGeometry `json:"geometry"`
+	Distance string               `json:"distance"`
 }
