@@ -9,8 +9,8 @@ import (
 
 func (r *router) userRoute(rg *gin.RouterGroup, c controllers.UserController, md middlewares.Middlewares) {
 	rg.Group("/user").
-		GET("/", md.Authentication, c.Me).
+		GET("/", md.RateLimiter(middlewares.TEN_PER_SECOND), md.Authentication, c.Me).
 		POST("/register", c.Register).
 		POST("/login", c.Login).
-		POST("/resend-email", c.ResendEmailVerification)
+		POST("/resend-email", md.RateLimiter(middlewares.TEN_PER_MINUTE), c.ResendEmailVerification)
 }

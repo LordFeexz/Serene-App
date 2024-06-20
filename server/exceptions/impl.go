@@ -31,3 +31,7 @@ func (err *badRequestError) Error() string {
 func (err *entityToLarge) Error() string {
 	return err.msg
 }
+
+func (err *tooManyRequestError) Error() string {
+	return err.msg
+}

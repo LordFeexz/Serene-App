@@ -39,3 +39,8 @@ type badGatewayError struct {
 	msg        string
 	StatusCode int
 }
+
+type tooManyRequestError struct {
+	msg        string
+	StatusCode int
+}

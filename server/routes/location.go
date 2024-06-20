@@ -10,5 +10,5 @@ import (
 func (r *router) locationRoute(rg *gin.RouterGroup, location controllers.LocationController, md middlewares.Middlewares) {
 	rg.Group("/location").
 		Use(md.Authentication).
-		GET("/clinic", location.NearByClinic)
+		GET("/clinic", md.RateLimiter(middlewares.FIVE_PER_HOUR), location.NearByClinic)
 }

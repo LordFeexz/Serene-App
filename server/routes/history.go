@@ -10,5 +10,5 @@ import (
 func (r *router) historyRoute(rg *gin.RouterGroup, c controllers.HistoryController, md middlewares.Middlewares) {
 	rg.Group("/history").
 		Use(md.Authentication).
-		GET("/", c.GetMyHistory)
+		GET("/", md.RateLimiter(middlewares.FIVE_PER_SECOND), c.GetMyHistory)
 }

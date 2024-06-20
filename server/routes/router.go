@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"math/rand"
 	"serene-app/controllers"
 	"serene-app/middlewares"
 
@@ -18,6 +19,9 @@ func NewRoutes(
 ) func(addr ...string) error {
 	r := router{gin.Default()}
 	r.Use(gin.Recovery())
+	r.GET("/ping", md.RateLimiter(middlewares.TEN_PER_SECOND), func(c *gin.Context) {
+		c.JSON(200, gin.H{"message": "pong", "s": rand.Int()})
+	})
 
 	groupRoutes := r.Group("/api/v1")
 	r.userRoute(groupRoutes, user, md)
