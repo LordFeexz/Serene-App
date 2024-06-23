@@ -9,17 +9,17 @@ type TherapyVideo struct {
 var (
 	THERAPY_VIDEOS = []TherapyVideo{
 		{
-			Title: "ASMR Reiki w/ Hypnosis for Complete Deep Relaxation (Yoga Nidra, Singing Bowl, Candle Crackling)",
+			Title: "Hypnosis for Complete Deep Relaxation",
 			Url:   "https://www.youtube.com/watch?v=iiTgqOUsF5s",
 			V:     "iiTgqOUsF5s",
 		},
 		{
-			Title: "Breathing Exercises To Stop A Panic Attack Now | TAKE A DEEP BREATH",
+			Title: "Breathing Exercises To Stop A Panic Attack Now",
 			Url:   "https://www.youtube.com/watch?v=8vkYJf8DOsc",
 			V:     "8vkYJf8DOsc",
 		},
 		{
-			Title: "Yoga To Reduce Stress | 30 Min Slow Flow - Relaxing Stretches + Savasana",
+			Title: "Yoga To Reduce Stress",
 			Url:   "https://www.youtube.com/watch?v=9MazN_6wdqI",
 			V:     "9MazN_6wdqI",
 		},

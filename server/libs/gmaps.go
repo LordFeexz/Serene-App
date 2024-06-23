@@ -31,7 +31,7 @@ func (g *GmapsImpl) NearbyClinic(ctx context.Context, lat, lng float64, radius u
 		PageToken: pageToken,
 	})
 	if err != nil {
-		err = exceptions.NewError("gagal mendapat data klinik terdekat", 502)
+		datas = []LocationSearchResult{}
 		return
 	}
 
@@ -50,7 +50,7 @@ func (g *GmapsImpl) NearbyClinic(ctx context.Context, lat, lng float64, radius u
 	}
 
 	if len(datas) < 1 {
-		err = exceptions.NewError("tidak ada data klinik terdekat", 404)
+		datas = []LocationSearchResult{}
 		return
 	}
 

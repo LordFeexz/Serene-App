@@ -17,8 +17,8 @@ type feature string
 
 const (
 	TABLE_NAME                 = "history"
-	MENTAL_HEALTH_TEST feature = "Tes Mental Health"
-	ADD_MOOD           feature = "Menambahkan mood hari ini"
+	MENTAL_HEALTH_TEST feature = "Membuka fitur mental health test"
+	ADD_MOOD           feature = "Membuka fitur mood test"
 	GET_VIDEO_THERAPY  feature = "Membuka fitur video relaksasi"
 	GET_NEARBY_CLINIC  feature = "Membuka fitur rujukan"
 )

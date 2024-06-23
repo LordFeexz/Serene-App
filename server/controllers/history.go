@@ -3,7 +3,6 @@ package controllers
 import (
 	"database/sql"
 	"fmt"
-	"serene-app/exceptions"
 	h "serene-app/helpers"
 	"serene-app/pkg/history"
 	"serene-app/pkg/user"
@@ -43,7 +42,7 @@ func (ctr *HistoryControllerImpl) GetMyHistory(c *gin.Context) {
 	}
 	defer rows.Close()
 
-	var datas []history.History
+	datas := make([]history.History, 0)
 	for rows.Next() {
 		var data history.History
 		if err := rows.Scan(
@@ -53,11 +52,6 @@ func (ctr *HistoryControllerImpl) GetMyHistory(c *gin.Context) {
 			return
 		}
 		datas = append(datas, data)
-	}
-
-	if len(datas) < 1 {
-		ctr.AbortResponse(c, exceptions.NewError("data tidak ditemukan", 404))
-		return
 	}
 
 	ctr.WriteResponse(c, 200, "OK", datas)
