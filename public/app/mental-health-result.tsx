@@ -9,7 +9,7 @@ import { Dimensions, Image, Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
 export default function mentalHealthResult() {
-  const { score } = useLocalSearchParams();
+  const { score, message } = useLocalSearchParams();
   const { height, width } = Dimensions.get("window");
   const smallCircleWidth = width * 0.3;
   const bigCircleWidth = width * 0.5;
@@ -80,7 +80,7 @@ export default function mentalHealthResult() {
           </View>
         </View>
         <Text style={{ fontSize: 16, textAlign: "center", color: "#1A4789" }}>
-          Segera hubungi professional
+          {message}
         </Text>
         <View
           style={{

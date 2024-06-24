@@ -5,26 +5,34 @@ import ContainerLogo from "@/components/ContainerLogo";
 import CustomButton from "@/components/CustomButton";
 import FooterWithMenu from "@/components/FooterWithMenu";
 import Logo from "@/components/Logo";
+import { getAllVideo } from "@/services/fetchService";
 import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 import { Dimensions, Image, Text, View } from "react-native";
 
+type Therapies = {
+  title: string;
+  videoId: string;
+};
+type TherapiesData = {
+  data: { title: string; v: string }[];
+};
 export default function video() {
   const router = useRouter();
-  const therapyVideos = [
-    {
-      therapyName: "Yoga",
-      videoId: "S-rB0pHI9fU",
-    },
-    {
-      therapyName: "ASMR",
-      videoId: "S-rB0pHI9fU",
-    },
-    {
-      therapyName: "RELAKSASI PERNAFASAN",
-      videoId: "S-rB0pHI9fU",
-    },
-  ];
+  const [therapyVideos, setTherapyVideos] = useState<Therapies[]>([]);
   const { width, height } = Dimensions.get("window");
+
+  useEffect(() => {
+    (async () => {
+      const { data } = (await getAllVideo()) as TherapiesData;
+      const therapiesVideos = data.map((el) => {
+        return { title: el.title, videoId: el.v };
+      });
+
+      setTherapyVideos(therapiesVideos);
+      console.log(data);
+    })();
+  }, []);
   const handleRoute = (vidId: string) => {
     router.push({ pathname: "video-player", params: { vidId: vidId } });
   };
@@ -169,7 +177,7 @@ export default function video() {
                   borderRadius: 10,
                 }}
                 onPress={() => handleRoute(item.videoId)}
-                text={item.therapyName}
+                text={item.title}
                 textStyle={{
                   color: "#1A4789",
                   fontWeight: "bold",

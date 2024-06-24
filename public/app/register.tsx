@@ -1,9 +1,7 @@
 import Container from "@/components/Container";
 import Footer from "@/components/Footer";
-import LinkButton from "@/components/LinkButton";
-import { FontAwesome6 } from "@expo/vector-icons";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import { useRouter } from "expo-router";
+import { AntDesign, FontAwesome6 } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { useState } from "react";
 import {
   Image,
@@ -14,34 +12,33 @@ import {
   View,
 } from "react-native";
 import SuccessAlert from "@/components/SuccessAlert";
-import { setItem } from "@/services/secureStore";
 
-export default function Login() {
+export default function register() {
   const [username, onChangeUsername] = useState("");
   const [password, onChangePassword] = useState("");
-  const router = useRouter();
-
+  const [email, onChangeEmail] = useState("");
   const handleLogin = () => {
-    fetch("https://34dd-180-252-48-151.ngrok-free.app/api/v1/user/login", {
+    console.log(username, password, email);
+    fetch("http://localhost:3001/api/v1/user/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        email: username,
+        username: username,
         password: password,
+        email: email,
       }),
     })
       .then((res) => res.json())
-      .then((data) => {
-        setItem("access_token", data.data);
-        SuccessAlert("Login Success");
-        router.replace("/");
+      .then(() => {
+        SuccessAlert("Register Success");
+        router.push("/login");
       })
-      .catch((e) => console.log(e, "<~"));
+      .catch(console.log);
   };
   return (
-    <Container styles={styles.container}>
+    <Container styles={{ alignItems: "center" }}>
       <View style={styles.header}>
         <Image
           source={require("@/assets/images/serene.png")}
@@ -53,6 +50,14 @@ export default function Login() {
         />
       </View>
       <View style={styles.body}>
+        <View style={styles.inputStyle}>
+          <AntDesign name="link" size={24} color="#FF" />
+          <TextInput
+            onChangeText={onChangeEmail}
+            value={email}
+            style={styles.textInput}
+          />
+        </View>
         <View style={styles.inputStyle}>
           <AntDesign name="user" size={24} color="#FF" />
           <TextInput
@@ -71,23 +76,8 @@ export default function Login() {
         </View>
         <View style={styles.signInContainer}>
           <Pressable onPress={handleLogin}>
-            <Text style={styles.signInText}>Sign in</Text>
+            <Text style={styles.signInText}>Sign Up</Text>
           </Pressable>
-        </View>
-        <Text style={{ fontWeight: "bold", fontSize: 20 }}>OR</Text>
-        <View style={styles.loginIconsContainer}>
-          <AntDesign name="google" size={36} color="black" />
-          <AntDesign name="twitter" size={36} color="black" />
-          <AntDesign name="facebook-square" size={36} color="black" />
-        </View>
-        <View style={{ flexDirection: "row" }}>
-          <Text>Doesn't have an account </Text>
-          <LinkButton
-            text="Sign up"
-            href="/register"
-            containerStyle={{}}
-            textStyle={{}}
-          />
         </View>
       </View>
       <Footer />
@@ -96,8 +86,11 @@ export default function Login() {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  header: {
+    flex: 3,
+    justifyContent: "center",
     alignItems: "center",
+    padding: 10,
   },
   logo: {
     width: 200,
@@ -107,6 +100,14 @@ const styles = StyleSheet.create({
   userIcon: {
     width: 200,
     height: 200,
+  },
+  body: {
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    flex: 3,
+    gap: 3,
+    width: "100%",
   },
   inputStyle: {
     flexDirection: "row",
@@ -121,24 +122,7 @@ const styles = StyleSheet.create({
     width: "80%",
     borderColor: "#3A8BC9",
   },
-  loginIconsContainer: {
-    flexDirection: "row",
-    gap: 24,
-  },
-  header: {
-    flex: 3,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 10,
-  },
-  body: {
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    flex: 3,
-    gap: 3,
-    width: "100%",
-  },
+  signInText: { color: "#804861", fontWeight: "bold", fontSize: 21.5 },
   signInContainer: {
     backgroundColor: "#4DA4E0",
     padding: 10,
@@ -147,5 +131,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 10,
   },
-  signInText: { color: "#804861", fontWeight: "bold", fontSize: 21.5 },
 });

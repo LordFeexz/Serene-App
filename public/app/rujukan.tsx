@@ -5,8 +5,11 @@ import ContainerLogo from "@/components/ContainerLogo";
 import CustomButton from "@/components/CustomButton";
 import FooterWithMenu from "@/components/FooterWithMenu";
 import Logo from "@/components/Logo";
+import { useEffect } from "react";
 import { Dimensions, Image, ScrollView, Text, View } from "react-native";
 
+import * as Location from "expo-location";
+import { getClinics } from "@/services/fetchService";
 function ClinicIcon() {
   return <Image source={require("@/assets/images/clinic.png")} />;
 }
@@ -37,6 +40,18 @@ const clinicData = [
 
 export default function Rujukan() {
   const { height } = Dimensions.get("window");
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      console.log(status);
+      const location = await Location.getCurrentPositionAsync();
+      console.log(location);
+      const { latitude, longitude } = location.coords;
+      const { data } = await getClinics(latitude, longitude);
+      console.log(data);
+    })();
+  }, []);
   return (
     <Container>
       <ContainerLogo>

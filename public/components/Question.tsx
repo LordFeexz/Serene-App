@@ -6,7 +6,7 @@ export default function Question({
   index,
   handleSetQuestions,
 }: {
-  item: { text: string; choosen: boolean | null };
+  item: { question: string; answer: boolean | null };
   index: number;
   handleSetQuestions: (answer: boolean, index: number) => void;
 }) {
@@ -35,7 +35,7 @@ export default function Question({
       <Text
         style={{ fontWeight: "bold", marginLeft: 8, fontSize: 0.023 * height }}
       >
-        {item.text}
+        {item.question}
       </Text>
       <View
         style={{
@@ -53,7 +53,7 @@ export default function Question({
             style={{ flexDirection: "row", alignItems: "center", gap: 4 }}
             onPress={() => handlePress("yes")}
           >
-            {active == "yes" && item.choosen ? (
+            {active == "yes" && item.answer ? (
               <Fontisto name="radio-btn-active" size={24} color="black" />
             ) : (
               <Fontisto name="radio-btn-passive" size={24} color="black" />
@@ -66,7 +66,7 @@ export default function Question({
             style={{ flexDirection: "row", alignItems: "center", gap: 4 }}
             onPress={() => handlePress("no")}
           >
-            {active == "no" && !item.choosen ? (
+            {active == "no" && !item.answer ? (
               <Fontisto name="radio-btn-active" size={24} color="black" />
             ) : (
               <Fontisto name="radio-btn-passive" size={24} color="black" />

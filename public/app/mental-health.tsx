@@ -6,44 +6,47 @@ import CustomButton from "@/components/CustomButton";
 import FooterWithMenu from "@/components/FooterWithMenu";
 import Logo from "@/components/Logo";
 import Question from "@/components/Question";
+import { getMentalHealth, postMentalHealth } from "@/services/fetchService";
 import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
-const mentalHealthQuestions = [
-  {
-    text: "Saya  sering sulit tidur atau tidur tidak berkualitas?",
-    choosen: false,
-  },
-  {
-    text: "Saya  sering merasa cepat lelah atau kelelahan?",
-    choosen: false,
-  },
-  {
-    text: "Saya  sulit untuk konsentrasi/fokus dalam mengerjakan sesuatu?",
-    choosen: false,
-  },
-  {
-    text: "Emosi saya cenderung tidak stabil dan sensitif",
-    choosen: false,
-  },
-];
+type Questions = {
+  question: string;
+  answer: boolean;
+};
 
-export default function mentalHealth({ navigation }: { navigation: any }) {
-  const [questions, setQuestions] = useState(mentalHealthQuestions);
+export default function mentalHealth() {
+  const [questions, setQuestions] = useState<Questions[]>([]);
   const router = useRouter();
   const { height } = Dimensions.get("window");
   const handleSetQuestions = (answer: boolean, index: number) => {
     setQuestions((prevQuestions) =>
       prevQuestions.map((item, idx) =>
-        idx === index ? { ...item, choosen: answer } : item
+        idx === index ? { ...item, answer: answer } : item
       )
     );
   };
 
-  const handleSubmit = () => {
-    console.log(questions);
-    router.push({ pathname: "/mental-health-result", params: { score: 50 } });
+  useEffect(() => {
+    (async () => {
+      const menatalHealthQuestion = await getMentalHealth();
+      const questions = menatalHealthQuestion.data.map((el: string) => ({
+        question: el,
+        answer: false,
+      }));
+      setQuestions(questions);
+    })();
+  }, []);
+  const handleSubmit = async () => {
+    const resultMentalHealth = await postMentalHealth(questions);
+    router.push({
+      pathname: "/mental-health-result",
+      params: {
+        score: resultMentalHealth.data.result,
+        message: resultMentalHealth.message,
+      },
+    });
   };
   return (
     <Container>

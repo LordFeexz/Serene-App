@@ -2,60 +2,79 @@ import Container from "@/components/Container";
 import ContainerBody from "@/components/ContainerBody";
 import ContainerHead from "@/components/ContainerHead";
 import ContainerLogo from "@/components/ContainerLogo";
-import CustomButton from "@/components/CustomButton";
 import FooterWithMenu from "@/components/FooterWithMenu";
 import Logo from "@/components/Logo";
-import { Dimensions, Image, Text, TouchableOpacity, View } from "react-native";
+import { getMood, postMood } from "@/services/fetchService";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import {
+  Dimensions,
+  Image,
+  Pressable,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+
+type Moods = {
+  imgSource: string;
+  text: string;
+};
 export default function moodTest() {
+  const [loading, setLoading] = useState(true);
+  const [moods, setMoods] = useState<Moods[]>([]);
+  const { moodDate } = useLocalSearchParams();
   const { width } = Dimensions.get("window");
-  const moods = [
-    {
-      imgSource: require("@/assets/images/emoticons/malu.png"),
-      text: "Calm",
-    },
-    {
-      imgSource: require("@/assets/images/emoticons/seneng.png"),
-      text: "Happy",
-    },
-    {
-      imgSource: require("@/assets/images/emoticons/gusar.png"),
-      text: "Sad",
-    },
-    {
-      imgSource: require("@/assets/images/emoticons/kelip.png"),
-      text: "Energetic",
-    },
-    {
-      imgSource: require("@/assets/images/emoticons/ngantuk.png"),
-      text: "Low Energy",
-    },
-    {
-      imgSource: require("@/assets/images/emoticons/nesu.png"),
-      text: "Angry",
-    },
-    {
-      imgSource: require("@/assets/images/emoticons/puyeng.png"),
-      text: "Confused",
-    },
-    {
-      imgSource: require("@/assets/images/emoticons/melet.png"),
-      text: "Frisky",
-    },
-    {
-      imgSource: require("@/assets/images/emoticons/hoeh.png"),
-      text: "Anxious",
-    },
-  ];
+  const router = useRouter();
+
+  useEffect(() => {
+    (async () => {
+      console.log(moodDate);
+      try {
+        const { data } = (await getMood()) as {
+          data: { image_url: string; name: string }[];
+        };
+        console.log(data);
+        const moods = data.map((el) => {
+          return {
+            imgSource: el.image_url,
+            text: el.name,
+          };
+        });
+        setMoods(moods);
+      } catch (error) {
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
+  const handlPostMood = async (mood_name: string) => {
+    try {
+      const { data } = await postMood({
+        mood_name,
+        date: new Date(moodDate as string) || new Date(),
+      });
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  if (loading) return <Text>Loading</Text>;
   return (
     <Container>
       <ContainerLogo>
         <Logo />
-        <View style={{ padding: 10 }}>
+        <Pressable
+          onPress={() => router.push("/mood-test-result")}
+          style={{ padding: 10 }}
+        >
           <Image
             source={require("@/assets/images/big-calendar.png")}
             style={{ width: 0.14 * width, height: 0.14 * width }}
           />
-        </View>
+        </Pressable>
       </ContainerLogo>
       <ContainerHead
         style={{
@@ -111,9 +130,10 @@ export default function moodTest() {
               gap: 10,
               borderRadius: 20,
             }}
+            onPress={() => handlPostMood(mood.text)}
           >
             <Image
-              source={mood.imgSource}
+              source={{ uri: mood.imgSource }}
               style={{ width: 0.05 * width, height: 0.05 * width }}
             />
             <Text>{mood.text}</Text>

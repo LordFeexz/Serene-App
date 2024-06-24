@@ -10,7 +10,7 @@ export default function RootLayout() {
     (async () => {
       const access_token = await getItem("access_token");
       if (!access_token) {
-        return router.replace("/");
+        return router.replace("/login");
       }
 
       return router.replace("/");
@@ -25,6 +25,7 @@ export default function RootLayout() {
       >
         <Stack.Screen name="activity" />
         <Stack.Screen name="login" />
+        <Stack.Screen name="register" />
         <Stack.Screen name="index" />
         <Stack.Screen name="submenu" />
         <Stack.Screen name="mental-health" />

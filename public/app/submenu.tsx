@@ -1,6 +1,7 @@
 import Container from "@/components/Container";
 import CustomButton from "@/components/CustomButton";
 import LinkButton from "@/components/LinkButton";
+import { removeItem } from "@/services/secureStore";
 import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { FlatList, StyleSheet, Text, View } from "react-native";
@@ -102,7 +103,8 @@ export default function Submenu() {
           textStyle={{ ...styles.buttonText }}
           text="Logout"
           onPress={() => {
-            console.log("Logout");
+            removeItem("access_token");
+            router.replace("/login");
           }}
         />
       </View>
