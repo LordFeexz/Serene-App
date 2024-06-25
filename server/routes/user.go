@@ -11,6 +11,6 @@ func (r *router) userRoute(rg *gin.RouterGroup, c controllers.UserController, md
 	rg.Group("/user").
 		GET("/", md.RateLimiter(middlewares.TEN_PER_SECOND), md.Authentication, c.Me).
 		POST("/register", c.Register).
-		POST("/login", c.Login).
+		POST("/login", md.RateLimiter(middlewares.TEN_PER_MINUTE), c.Login).
 		POST("/resend-email", md.RateLimiter(middlewares.TEN_PER_MINUTE), c.ResendEmailVerification)
 }

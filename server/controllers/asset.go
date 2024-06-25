@@ -8,6 +8,7 @@ import (
 	"serene-app/pkg/history"
 	"serene-app/pkg/user"
 	"serene-app/web"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -21,6 +22,20 @@ func NewAssetRoute(
 	userService user.UserService,
 ) AssetController {
 	return &AssetControllerImpl{w, v, historyRepo, userService}
+}
+
+func (ctr *AssetControllerImpl) GetAllEmote(c *gin.Context) {
+	baseUrl := h.GetEnvOrDefault("BASE_URL", "http://localhost:3001/api/v1") + "/assets/emote"
+	datas := make([]map[string]any, 0)
+
+	for key := range cons.EMOTENAMEMAP {
+		datas = append(datas, map[string]any{
+			"name":      key,
+			"image_url": baseUrl + "/" + cons.EMOTENAMEMAP[key],
+		})
+	}
+
+	ctr.WriteResponse(c, 200, "OK", datas)
 }
 
 func (ctr *AssetControllerImpl) GetEmoteByName(c *gin.Context) {
@@ -55,4 +70,39 @@ func (ctr *AssetControllerImpl) GetOneTheraphyVideo(c *gin.Context) {
 		})
 	}()
 	ctr.WriteResponse(c, 200, "OK", video)
+}
+
+func (ctr *AssetControllerImpl) GetAllSound(c *gin.Context) {
+	baseUrl := h.GetEnvOrDefault("BASE_URL", "http://localhost:3001/api/v1") + "/assets/sound"
+	datas := make([]map[string]any, 0)
+
+	for key := range cons.SOUND {
+		datas = append(datas, map[string]any{
+			"name": key,
+			"url":  baseUrl + "/" + key,
+		})
+	}
+
+	ctr.WriteResponse(c, 200, "OK", datas)
+}
+
+func (ctr *AssetControllerImpl) GetOneSound(c *gin.Context) {
+	title := c.Param("title")
+	sound, err := h.FindOneSound(title)
+	if err != nil {
+		ctr.AbortResponse(c, err)
+		return
+	}
+
+	go func() {
+		now := time.Now()
+		ctr.historyRepo.Create(context.Background(), &history.History{
+			FeatureUsed: history.GET_SOUND_THERAPY,
+			Description: fmt.Sprintf("membuka audio %s pada %d-%02d-%02d pukul %02d:%02d", strings.ReplaceAll(title, "-", " "), now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute()),
+			UserId:      ctr.userService.GetUserFromRequestCtx(c).Id,
+			CreatedAt:   now,
+			UpdatedAt:   now,
+		})
+	}()
+	c.File(sound)
 }

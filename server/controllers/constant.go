@@ -68,6 +68,9 @@ type AssetController interface {
 	GetEmoteByName(c *gin.Context)
 	GetAllTherapyVideo(c *gin.Context)
 	GetOneTheraphyVideo(c *gin.Context)
+	GetAllSound(c *gin.Context)
+	GetOneSound(c *gin.Context)
+	GetAllEmote(c *gin.Context)
 }
 
 type AssetControllerImpl struct {
