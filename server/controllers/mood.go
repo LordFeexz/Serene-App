@@ -122,7 +122,7 @@ func (ctr *MoodControllerImpl) AddTodayMood(c *gin.Context) {
 			c,
 			exceptions.NewError(
 				fmt.Sprintf(
-					"kamu sudah menambahkan mood untuk tanggal %d-%02d-%02d", date.Year(), date.Month(), date.Day(),
+					"kamu sudah menambahkan mood untuk tanggal %d-%s-%02d", date.Year(), date.Month().String(), date.Day(),
 				),
 				409,
 			),

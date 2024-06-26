@@ -16,6 +16,7 @@ func init() {
 	defineLimiter(FIVE_PER_SECOND)
 	defineLimiter(TEN_PER_SECOND)
 	defineLimiter(FIVE_PER_HOUR)
+	defineLimiter(FIFTY_PER_SECOND)
 }
 
 func defineLimiter(rateStr LimitRate) {

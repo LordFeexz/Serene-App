@@ -19,6 +19,10 @@ func NewRoutes(
 ) func(addr ...string) error {
 	r := router{gin.Default()}
 	r.Use(gin.Recovery())
+	r.Use(md.Cors())
+	r.Use(md.RateLimiter(middlewares.FIFTY_PER_SECOND))
+	r.Use(md.XSSProtection())
+
 	r.GET("/ping", md.RateLimiter(middlewares.TEN_PER_SECOND), func(c *gin.Context) {
 		c.JSON(200, gin.H{"message": "pong", "s": rand.Int()})
 	})

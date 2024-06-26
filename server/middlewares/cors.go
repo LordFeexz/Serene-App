@@ -9,9 +9,10 @@ import (
 
 func (m *MiddlewaresImpl) Cors() gin.HandlerFunc {
 	return cors.New(cors.Config{
-		AllowMethods: []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"},
-		AllowHeaders: []string{"Origin", "Content-Length", "Content-Type"},
-		MaxAge:       time.Hour * 12,
+		AllowMethods:    []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"},
+		AllowHeaders:    []string{"Origin", "Content-Length", "Content-Type"},
+		MaxAge:          time.Hour * 12,
+		AllowAllOrigins: true,
 	},
 	)
 }

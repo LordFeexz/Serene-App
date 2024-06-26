@@ -15,6 +15,8 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+//TODO : create docs for new endpoint
+
 func NewAssetRoute(
 	w web.ResponseWriter,
 	v *validator.Validate,
