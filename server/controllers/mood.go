@@ -74,17 +74,12 @@ func (ctr *MoodControllerImpl) AddTodayMood(c *gin.Context) {
 		return
 	}
 
-	var date time.Time
 	now := time.Now()
-	if body.Date == "" {
-		date = now
-	} else {
-		parsed, err := h.ParseStrToDate(body.Date)
-		if err != nil {
-			ctr.AbortResponse(c, err)
-			return
+	date := now
+	if body.Date != "" {
+		if parsed, err := h.ParseStrToDate(body.Date); err == nil {
+			date = parsed
 		}
-		date = parsed
 	}
 
 	if h.IsAfter(date, h.EndOfDay(now)) {
@@ -253,4 +248,52 @@ func (ctr *MoodControllerImpl) GetMyMood(c *gin.Context) {
 	}
 
 	ctr.WriteResponse(c, 200, "OK", results)
+}
+
+func (ctr *MoodControllerImpl) GetMyMoodByDate(c *gin.Context) {
+	date := time.Now()
+	if parsed, err := h.ParseStrToDate(c.Param("date")); err == nil {
+		date = parsed
+	}
+
+	var id, userId, moodId, moodDate, createdAt, updatedAt, moodName any
+	if err := ctr.userMoodRepo.GetDb().QueryRowContext(
+		c.Request.Context(),
+		h.LogQuery(
+			fmt.Sprintf(`
+			SELECT 
+			um.id, um.user_id, um.mood_id, um.date, um.created_at, um.updated_at, m.name as mood_name 
+			FROM %s um
+			LEFT JOIN %s m ON um.mood_id = m.id
+			WHERE user_id = $1 AND ( date BETWEEN $2 AND $3 )`, usermood.TABLE_NAME, mood.TABLE_NAME),
+		),
+		ctr.userService.GetUserFromRequestCtx(c).Id,
+		h.StartOfDay(date),
+		h.EndOfDay(date),
+	).Scan(
+		&id,
+		&userId,
+		&moodId,
+		&moodDate,
+		&createdAt,
+		&updatedAt,
+		&moodName,
+	); err != nil && err != sql.ErrNoRows {
+		ctr.AbortResponse(c, err)
+		return
+	} else if err == sql.ErrNoRows {
+		ctr.AbortResponse(c, exceptions.NewError("data tidak ditemukan", 404))
+		return
+	}
+
+	ctr.WriteResponse(c, 200, "OK", map[string]any{
+		"id":         id,
+		"user_id":    userId,
+		"mood_id":    moodId,
+		"date":       moodDate,
+		"created_at": createdAt,
+		"updated_at": updatedAt,
+		"name":       moodName,
+		"image_url":  h.GetEnvOrDefault("BASE_URL", "http://localhost:3001/api/v1") + "/assets/emote" + "/" + cons.EMOTENAMEMAP[moodName.(string)],
+	})
 }

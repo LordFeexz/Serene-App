@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"math/rand"
 	"serene-app/controllers"
 	"serene-app/middlewares"
 
@@ -23,8 +22,8 @@ func NewRoutes(
 	r.Use(md.RateLimiter(middlewares.FIFTY_PER_SECOND))
 	r.Use(md.XSSProtection())
 
-	r.GET("/ping", md.RateLimiter(middlewares.TEN_PER_SECOND), func(c *gin.Context) {
-		c.JSON(200, gin.H{"message": "pong", "s": rand.Int()})
+	r.GET("/ping", md.RateLimiter(middlewares.FIVE_PER_HOUR), func(c *gin.Context) {
+		c.JSON(200, gin.H{"message": "pong"})
 	})
 
 	groupRoutes := r.Group("/api/v1")

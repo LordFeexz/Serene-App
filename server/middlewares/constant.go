@@ -5,7 +5,6 @@ import (
 	"serene-app/web"
 
 	"github.com/gin-gonic/gin"
-	"github.com/ulule/limiter/v3"
 )
 
 type Middlewares interface {
@@ -19,11 +18,6 @@ type MiddlewaresImpl struct {
 	web.ResponseWriter
 	userRepo user.UserRepo
 }
-
-var (
-	rateLimiters = make(map[LimitRate]*limiter.Limiter)
-	store        limiter.Store
-)
 
 type LimitRate string
 

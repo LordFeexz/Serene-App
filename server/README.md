@@ -370,6 +370,40 @@ _Response (200 - OK)_
 }
 ```
 
+#### List User Mood
+
+```http
+  Post /mood/me/:date
+```
+
+| Headers         | Type     | Description   |
+| :-------------- | :------- | :------------ |
+| `authorization` | `string` | **Required**. |
+
+| Params | Type     | Description                              |
+| :----- | :------- | :--------------------------------------- |
+| `date` | `string` | **Required**. (if invalid,default today) |
+
+_Response (200 - OK)_
+
+```json
+{
+  "status": "string",
+  "code": "integer",
+  "message": "string",
+  "data": {
+    "created_at": "string/null",
+    "date": "string/date",
+    "id": "integer/null",
+    "image_url": "string/null",
+    "mood_id": "integer/null",
+    "name": "string/null",
+    "updated_at": "string/null",
+    "user_id": "string/null"
+  }
+}
+```
+
 # History Endpoint
 
 #### Get My History List

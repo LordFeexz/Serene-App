@@ -10,7 +10,7 @@ import (
 func (m *MiddlewaresImpl) XSSProtection() gin.HandlerFunc {
 	policy := bluemonday.UGCPolicy()
 	return func(c *gin.Context) {
-		if c.Request.Method == http.MethodPost || c.Request.Method == http.MethodPut {
+		if c.Request.Method == http.MethodPost || c.Request.Method == http.MethodPut || c.Request.Method == http.MethodPatch {
 			c.Request.ParseForm()
 
 			for key, values := range c.Request.PostForm {

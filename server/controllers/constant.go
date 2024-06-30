@@ -53,6 +53,7 @@ type MoodController interface {
 	GetListMood(c *gin.Context)
 	AddTodayMood(c *gin.Context)
 	GetMyMood(c *gin.Context)
+	GetMyMoodByDate(c *gin.Context)
 }
 
 type MoodControllerImpl struct {

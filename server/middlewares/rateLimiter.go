@@ -9,32 +9,12 @@ import (
 	"github.com/ulule/limiter/v3/drivers/store/memory"
 )
 
-func init() {
-	store = memory.NewStore()
-
-	defineLimiter(TEN_PER_MINUTE)
-	defineLimiter(FIVE_PER_SECOND)
-	defineLimiter(TEN_PER_SECOND)
-	defineLimiter(FIVE_PER_HOUR)
-	defineLimiter(FIFTY_PER_SECOND)
-}
-
-func defineLimiter(rateStr LimitRate) {
+func (m *MiddlewaresImpl) RateLimiter(rateStr LimitRate) gin.HandlerFunc {
+	store := memory.NewStore()
 	rate, err := limiter.NewRateFromFormatted(string(rateStr))
 	if err != nil {
 		log.Fatalf("invalid rate str")
 	}
 
-	rateLimiters[rateStr] = limiter.New(store, rate)
-}
-
-func (m *MiddlewaresImpl) RateLimiter(rateStr LimitRate) gin.HandlerFunc {
-	limiterInstance, exists := rateLimiters[rateStr]
-	if !exists {
-		return func(c *gin.Context) {
-			c.Next()
-		}
-	}
-
-	return g.NewMiddleware(limiterInstance)
+	return g.NewMiddleware(limiter.New(store, rate))
 }
