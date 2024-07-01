@@ -2,7 +2,7 @@ import axios from "axios";
 import { getItem } from "./secureStore";
 
 export const axiosInstance = axios.create({
-  baseURL: "https://34dd-180-252-48-151.ngrok-free.app",
+  baseURL: "https://4615-36-90-31-203.ngrok-free.app",
 });
 
 axiosInstance.interceptors.request.use(async (config) => {

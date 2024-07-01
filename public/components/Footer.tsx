@@ -1,6 +1,7 @@
-import { Text, View } from "react-native";
+import { Dimensions, Text, View } from "react-native";
 
 export default function Footer() {
+  const { height } = Dimensions.get("window");
   return (
     <View
       style={{
@@ -10,6 +11,7 @@ export default function Footer() {
         padding: 10,
         alignItems: "center",
         justifyContent: "center",
+        marginTop: height * 0.5,
       }}
     >
       <Text

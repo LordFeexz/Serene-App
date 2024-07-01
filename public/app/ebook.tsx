@@ -5,10 +5,85 @@ import ContainerLogo from "@/components/ContainerLogo";
 import CustomButton from "@/components/CustomButton";
 import FooterWithMenu from "@/components/FooterWithMenu";
 import Logo from "@/components/Logo";
-import { Dimensions, Image, Text, View } from "react-native";
+import * as FileSystem from "expo-file-system";
+import { useState } from "react";
+import { Dimensions, Image, Platform, Text, View } from "react-native";
+
+const { StorageAccessFramework } = FileSystem;
 
 export default function ebook() {
   const { height, width } = Dimensions.get("window");
+  const [downloadProgress, setDownloadProgress] = useState(0);
+  const downloadPath =
+    FileSystem.documentDirectory + (Platform.OS == "android" ? "" : "");
+  const ensureDirAsync = async (dir: string, intermediates = true) => {
+    const props = await FileSystem.getInfoAsync(dir);
+    if (props.exists && props.isDirectory) {
+      return props;
+    }
+    let _ = await FileSystem.makeDirectoryAsync(dir, { intermediates });
+    return await ensureDirAsync(dir, intermediates);
+  };
+  const downloadCallback = (downloadProgress: any) => {
+    const progress =
+      downloadProgress.totalBytesWritten /
+      downloadProgress.totalBytesExpectedToWrite;
+    setDownloadProgress(progress);
+  };
+
+  const downloadFile = async (fileUrl: string) => {
+    if (Platform.OS == "android") {
+      const dir = ensureDirAsync(downloadPath);
+    }
+    let fileName = fileUrl.split("Reports/")[1];
+    //alert(fileName)
+    const downloadResumable = FileSystem.createDownloadResumable(
+      fileUrl,
+      downloadPath + fileName,
+      {},
+      downloadCallback
+    );
+
+    try {
+      const downloadResult = await downloadResumable.downloadAsync();
+      if (Platform.OS == "android")
+        saveAndroidFile(downloadResult?.uri as string, fileName);
+    } catch (e) {
+      console.error("download error:", e);
+    }
+  };
+  const saveAndroidFile = async (fileUri: string, fileName = "File") => {
+    try {
+      const fileString = await FileSystem.readAsStringAsync(fileUri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      const permissions =
+        await StorageAccessFramework.requestDirectoryPermissionsAsync();
+      if (!permissions.granted) {
+        return;
+      }
+
+      try {
+        await StorageAccessFramework.createFileAsync(
+          permissions.directoryUri,
+          fileName,
+          "application/pdf"
+        )
+          .then(async (uri) => {
+            await FileSystem.writeAsStringAsync(uri, fileString, {
+              encoding: FileSystem.EncodingType.Base64,
+            });
+            alert("Report Downloaded Successfully");
+          })
+          .catch((e) => {});
+      } catch (e) {
+        throw new Error(e as unknown as string);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <Container>
@@ -77,9 +152,11 @@ export default function ebook() {
             }}
           />
           <CustomButton
-            onPress={() => {
-              console.log("ebook");
-            }}
+            onPress={async () =>
+              downloadFile(
+                "https://storage.googleapis.com/tipsy-bucket/Reports/PSYCHOLOGICAL-HEALTH-AND-SELF-HEALTH.pdf"
+              )
+            }
             text="DOWNLOAD E-BOOK"
             textStyle={{
               color: "white",

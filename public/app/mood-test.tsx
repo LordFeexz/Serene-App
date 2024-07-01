@@ -4,7 +4,8 @@ import ContainerHead from "@/components/ContainerHead";
 import ContainerLogo from "@/components/ContainerLogo";
 import FooterWithMenu from "@/components/FooterWithMenu";
 import Logo from "@/components/Logo";
-import { getMood, postMood } from "@/services/fetchService";
+import AlertComponent from "@/components/SuccessAlert";
+import { getMood, getTodaysMood, postMood } from "@/services/fetchService";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -29,12 +30,19 @@ export default function moodTest() {
 
   useEffect(() => {
     (async () => {
-      console.log(moodDate);
       try {
+        if (!moodDate) {
+          const { data: todaysMood } = await getTodaysMood({
+            date: new Date(),
+          });
+          console.log(todaysMood, "<~ todays mood");
+          if (todaysMood == null) {
+            return moveToResult();
+          }
+        }
         const { data } = (await getMood()) as {
           data: { image_url: string; name: string }[];
         };
-        console.log(data);
         const moods = data.map((el) => {
           return {
             imgSource: el.image_url,
@@ -43,6 +51,7 @@ export default function moodTest() {
         });
         setMoods(moods);
       } catch (error) {
+        console.log(error);
       } finally {
         setLoading(false);
       }
@@ -55,10 +64,14 @@ export default function moodTest() {
         mood_name,
         date: new Date(moodDate as string) || new Date(),
       });
-      console.log(data);
+      AlertComponent("Success add mood!");
+      moveToResult();
     } catch (error) {
       console.log(error);
     }
+  };
+  const moveToResult = () => {
+    return router.push("/mood-test-result");
   };
 
   if (loading) return <Text>Loading</Text>;
@@ -66,10 +79,7 @@ export default function moodTest() {
     <Container>
       <ContainerLogo>
         <Logo />
-        <Pressable
-          onPress={() => router.push("/mood-test-result")}
-          style={{ padding: 10 }}
-        >
+        <Pressable onPress={moveToResult} style={{ padding: 10 }}>
           <Image
             source={require("@/assets/images/big-calendar.png")}
             style={{ width: 0.14 * width, height: 0.14 * width }}

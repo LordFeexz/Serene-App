@@ -1,4 +1,4 @@
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 import { axiosInstance } from "./axiosInstance";
 
 export const getMood = async () => {
@@ -12,6 +12,18 @@ export const getMood = async () => {
   }
 };
 
+export const getTodaysMood = async ({ date }: { date: Date }) => {
+  try {
+    const { data } = await axios({
+      url: axiosInstance.getUri() + "/api/v1/mood/" + date,
+    });
+    return data;
+  } catch (error) {
+    console.log(error, "<~");
+    return { data: null };
+  }
+};
+
 type PostMoodPayload = {
   mood_name: string;
   date: Date;
@@ -22,6 +34,7 @@ export const getMyMoods = async () => {
     const { data } = await axiosInstance({
       url: axiosInstance.getUri() + "/api/v1/mood/me",
     });
+    console.log(data);
     return data;
   } catch (error) {
     console.log(error, "<~");

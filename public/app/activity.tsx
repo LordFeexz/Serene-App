@@ -42,7 +42,7 @@ export default function actiivity() {
     const inputDate = new Date(date);
     const now = new Date();
     const diffInSeconds = Math.floor(
-      (now.getTime() - inputDate.getTime()) / 1000
+      (inputDate.getTime() - now.getTime()) / 1000
     );
 
     if (diffInSeconds < 60) {
@@ -76,7 +76,11 @@ export default function actiivity() {
       >
         <Image
           source={require("@/assets/images/big-activity.png")}
-          style={{ height: (1.3 * height * 1) / 7, width: 0.3 * width }}
+          style={{
+            height: (1.35 * height * 1) / 7,
+            width: 0.315 * width,
+            objectFit: "contain",
+          }}
         />
       </ContainerHead>
       <ContainerBody>
