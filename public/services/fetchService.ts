@@ -12,7 +12,7 @@ export const getMood = async () => {
   }
 };
 
-export const getTodaysMood = async ({ date }: { date: Date }) => {
+export const getTodaysMood = async (date: string) => {
   try {
     const { data } = await axios({
       url: axiosInstance.getUri() + "/api/v1/mood/" + date,

@@ -14,7 +14,6 @@ import {
   Text,
   View,
 } from "react-native";
-
 type Histories = {
   created_at: string;
   feature_used: string;
@@ -41,6 +40,7 @@ export default function actiivity() {
   const formatDate = (date: string) => {
     const inputDate = new Date(date);
     const now = new Date();
+
     const diffInSeconds = Math.floor(
       (inputDate.getTime() - now.getTime()) / 1000
     );

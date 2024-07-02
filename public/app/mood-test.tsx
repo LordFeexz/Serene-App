@@ -32,11 +32,19 @@ export default function moodTest() {
     (async () => {
       try {
         if (!moodDate) {
-          const { data: todaysMood } = await getTodaysMood({
-            date: new Date(),
-          });
+          const todaysDate = new Date();
+          const thisYear = todaysDate.getFullYear();
+          const thisMonth = todaysDate.getMonth() + 1;
+          const thisDay = todaysDate.getDate();
+          const payloadDate =
+            thisYear +
+            "-" +
+            `${thisMonth < 10 ? "0" + thisMonth : thisMonth}` +
+            "-" +
+            `${thisDay < 10 ? "0" + thisDay : thisDay}`;
+          const { data: todaysMood } = await getTodaysMood(payloadDate);
           console.log(todaysMood, "<~ todays mood");
-          if (todaysMood == null) {
+          if (todaysMood != null) {
             return moveToResult();
           }
         }
