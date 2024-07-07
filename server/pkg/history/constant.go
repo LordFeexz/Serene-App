@@ -22,4 +22,5 @@ const (
 	GET_VIDEO_THERAPY  feature = "Membuka fitur video relaksasi"
 	GET_SOUND_THERAPY  feature = "Membuka fitur audio relaksasi"
 	GET_NEARBY_CLINIC  feature = "Membuka fitur rujukan"
+	DOWNLOAD_PDF       feature = "Membuka fitur pdf"
 )

@@ -15,5 +15,6 @@ func (r *router) assetRoute(rg *gin.RouterGroup, asset controllers.AssetControll
 		GET("/therapy-video", asset.GetAllTherapyVideo).
 		GET("/therapy-video/:v", asset.GetOneTheraphyVideo).
 		GET("/sound", asset.GetAllSound).
-		GET("/sound/:title", asset.GetOneSound)
+		GET("/sound/:title", asset.GetOneSound).
+		GET("/pdf", asset.GetPdf)
 }

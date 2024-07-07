@@ -108,3 +108,23 @@ func (ctr *AssetControllerImpl) GetOneSound(c *gin.Context) {
 	}()
 	c.File(sound)
 }
+
+func (ctr *AssetControllerImpl) GetPdf(c *gin.Context) {
+	file, err := h.GetPdf()
+	if err != nil {
+		ctr.AbortResponse(c, err)
+		return
+	}
+
+	go func() {
+		now := time.Now()
+		ctr.historyRepo.Create(context.Background(), &history.History{
+			FeatureUsed: history.DOWNLOAD_PDF,
+			Description: fmt.Sprintf("mendownload buku saku pada %d-%02d-%02d pukul %02d:%02d", now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute()),
+			UserId:      ctr.userService.GetUserFromRequestCtx(c).Id,
+			CreatedAt:   now,
+			UpdatedAt:   now,
+		})
+	}()
+	c.File(file)
+}
