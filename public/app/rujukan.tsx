@@ -5,53 +5,121 @@ import ContainerLogo from "@/components/ContainerLogo";
 import CustomButton from "@/components/CustomButton";
 import FooterWithMenu from "@/components/FooterWithMenu";
 import Logo from "@/components/Logo";
-import { useEffect } from "react";
-import { Dimensions, Image, ScrollView, Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import {
+  Dimensions,
+  Image,
+  Linking,
+  Platform,
+  ScrollView,
+  Text,
+  View,
+} from "react-native";
 
 import * as Location from "expo-location";
 import { getClinics } from "@/services/fetchService";
+import Loading from "@/components/Loading";
+import { getCache, setCache } from "@/services/cache";
 function ClinicIcon() {
   return <Image source={require("@/assets/images/clinic.png")} />;
 }
-
-const clinicData = [
-  {
-    name: "POLIKLINIK USU",
-    address:
-      "Kampus USU, Jl. Universitas No.32, Padang Bulan, Kec. Medan Baru, Kota Medan, Sumatera Utara 20155",
-    distance: "500m",
-  },
-  {
-    name: "Praktek Psikiater dr. ADELIYA",
-    address: "Jalan Hebatnya duniawi no. 13 Medan",
-    distance: "850m",
-  },
-  {
-    name: "PSIKIATER SETIA BUDI",
-    address: "Jl. Setia budi no 1133 Medan",
-    distance: "1.5km",
-  },
-  {
-    name: "YAYASAN PRAKTEK PSIKOLOG MEDAN",
-    address: "Jl Maju Bersama Medan",
-    distance: "2.1km",
-  },
-];
+type ClinicType = {
+  name: string;
+  vicinity: string;
+  geometry: {
+    location: {
+      lat: number;
+      lng: number;
+    };
+  };
+  distance: string;
+};
 
 export default function Rujukan() {
   const { height } = Dimensions.get("window");
+  const [isLoading, setIsLoading] = useState(true);
+  const [clinicData, setClinicData] = useState<ClinicType[]>([]);
 
   useEffect(() => {
     (async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      console.log(status);
-      const location = await Location.getCurrentPositionAsync();
-      console.log(location);
-      const { latitude, longitude } = location.coords;
-      const { data } = await getClinics(latitude, longitude);
-      console.log(data);
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+
+        if (status == "granted") {
+          const location = await Location.getCurrentPositionAsync();
+
+          const { latitude, longitude } = location.coords;
+          const myLocation = await getCache("my_location");
+
+          if (myLocation) {
+            const { lat, lng } = JSON.parse(myLocation);
+            const distance = haversine(lat, lng, latitude, longitude);
+
+            if (distance < 500) {
+              const clinics = JSON.parse(
+                (await getCache("clinics")) as unknown as string
+              ) as ClinicType[];
+              setClinicData(clinics);
+              return;
+            }
+          }
+
+          const { data } = await getClinics(latitude, longitude);
+          const { clinics } = data;
+          setClinicData(clinics);
+          setCache(
+            "my_location",
+            JSON.stringify({ lat: latitude, lng: longitude })
+          );
+          setCache("clinics", JSON.stringify(clinics));
+        }
+      } catch (error) {
+      } finally {
+        setIsLoading(false);
+      }
     })();
   }, []);
+
+  const haversine = (
+    lat1: number,
+    lon1: number,
+    lat2: number,
+    lon2: number
+  ) => {
+    const R = 6371000; // Radius of the Earth in meters
+    const toRadians = (degrees: number) => degrees * (Math.PI / 180);
+
+    const phi1 = toRadians(lat1);
+    const phi2 = toRadians(lat2);
+    const deltaPhi = toRadians(lat2 - lat1);
+    const deltaLambda = toRadians(lon2 - lon1);
+
+    const a =
+      Math.sin(deltaPhi / 2) ** 2 +
+      Math.cos(phi1) * Math.cos(phi2) * Math.sin(deltaLambda / 2) ** 2;
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    const distance = R * c;
+    return distance;
+  };
+
+  const openGMaps = (lat: number, lng: number, label: string) => {
+    const url = Platform.select({
+      ios: "maps:" + lat + "," + lng + "?q=" + label,
+      android: "geo:" + lat + "," + lng + "?q=" + label,
+    });
+
+    Linking.canOpenURL(url as string).then((supported) => {
+      if (supported) {
+        return Linking.openURL(url as string);
+      }
+
+      const browserUrl =
+        "https://www.google.com/maps/@" + lat + "," + lng + "?q=" + label;
+      return Linking.openURL(browserUrl);
+    });
+  };
+  if (isLoading) return <Loading />;
   return (
     <Container>
       <ContainerLogo>
@@ -145,7 +213,7 @@ export default function Rujukan() {
                   {clinic.name}
                 </Text>
                 <Text style={{ textAlign: "center", fontSize: height * 0.015 }}>
-                  {clinic.address}
+                  {clinic.vicinity}
                 </Text>
               </View>
               <View
@@ -160,7 +228,13 @@ export default function Rujukan() {
                 <Text>{clinic.distance}</Text>
                 <CustomButton
                   text="Pilih"
-                  onPress={() => console.log("pilih")}
+                  onPress={() =>
+                    openGMaps(
+                      clinic.geometry.location.lat,
+                      clinic.geometry.location.lng,
+                      clinic.name
+                    )
+                  }
                   containerStyle={{
                     backgroundColor: "#1A4789",
                     padding: 5,

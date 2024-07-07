@@ -19,7 +19,7 @@ import {
   View,
 } from "react-native";
 import SuccessAlert from "@/components/SuccessAlert";
-import { setItem } from "@/services/secureStore";
+import { getItem, setItem } from "@/services/secureStore";
 import CustomKeyboard from "@/components/CustomKeyboard";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
@@ -36,8 +36,21 @@ export default function Login() {
   const c = padding1 - m * breakpoint1;
   const paddingBottom = m * height + c;
 
+  useEffect(() => {
+    (async () => {
+      try {
+        const access_token = await getItem("access_token");
+        if (access_token) {
+          return router.replace("/");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, []);
+
   const handleLogin = () => {
-    fetch("https://4615-36-90-31-203.ngrok-free.app/api/v1/user/login", {
+    fetch("https://42jz4hld-3001.asse.devtunnels.ms/api/v1/user/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -50,9 +63,10 @@ export default function Login() {
       .then((res) => res.json())
       .then((data) => {
         console.log(typeof data.data);
+        console.log(data);
         setItem("access_token", data.data);
         SuccessAlert("Login Success");
-        router.replace("/");
+        return router.replace("/");
       })
       .catch((e) => console.log(e, "<~"));
   };

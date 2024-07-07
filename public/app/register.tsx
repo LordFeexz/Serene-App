@@ -30,7 +30,7 @@ export default function register() {
   const c = padding1 - m * breakpoint1;
   const paddingBottom = m * height + c;
   const handleRegister = () => {
-    fetch("http://localhost:3001/api/v1/user/register", {
+    fetch("https://42jz4hld-3001.asse.devtunnels.ms/api/v1/user/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

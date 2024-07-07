@@ -4,7 +4,7 @@ import { axiosInstance } from "./axiosInstance";
 export const getMood = async () => {
   try {
     const { data } = await axiosInstance({
-      url: axiosInstance.getUri() + "/api/v1/mood/",
+      url: axiosInstance.getUri() + "/mood/",
     });
     return data;
   } catch (error) {
@@ -15,7 +15,7 @@ export const getMood = async () => {
 export const getTodaysMood = async (date: string) => {
   try {
     const { data } = await axios({
-      url: axiosInstance.getUri() + "/api/v1/mood/" + date,
+      url: axiosInstance.getUri() + "/mood/" + date,
     });
     return data;
   } catch (error) {
@@ -32,7 +32,7 @@ type PostMoodPayload = {
 export const getMyMoods = async () => {
   try {
     const { data } = await axiosInstance({
-      url: axiosInstance.getUri() + "/api/v1/mood/me",
+      url: axiosInstance.getUri() + "/mood/me",
     });
     console.log(data);
     return data;
@@ -43,7 +43,7 @@ export const getMyMoods = async () => {
 export const postMood = async (payload: PostMoodPayload) => {
   try {
     const { data } = await axiosInstance({
-      url: axiosInstance.getUri() + "/api/v1/mood/",
+      url: axiosInstance.getUri() + "/mood/",
       method: "POST",
       data: payload,
     });
@@ -58,7 +58,7 @@ export const postMood = async (payload: PostMoodPayload) => {
 export const getMentalHealth = async () => {
   try {
     const { data } = await axiosInstance({
-      url: axiosInstance.getUri() + "/api/v1/test/mental-health",
+      url: axiosInstance.getUri() + "/test/mental-health",
     });
     return data;
   } catch (error) {
@@ -73,7 +73,7 @@ type Questions = {
 export const postMentalHealth = async (questions: Questions[]) => {
   try {
     const { data } = await axiosInstance({
-      url: axiosInstance.getUri() + "/api/v1/test/mental-health",
+      url: axiosInstance.getUri() + "/test/mental-health",
       method: "POST",
       data: { result: questions },
     });
@@ -86,7 +86,7 @@ export const postMentalHealth = async (questions: Questions[]) => {
 export const getHistory = async () => {
   try {
     const { data } = await axiosInstance({
-      url: axiosInstance.getUri() + "/api/v1/history/",
+      url: axiosInstance.getUri() + "/history/",
     });
     return data;
   } catch (error) {
@@ -97,7 +97,7 @@ export const getHistory = async () => {
 export const getAllVideo = async () => {
   try {
     const { data } = await axiosInstance({
-      url: axiosInstance.getUri() + "/api/v1/assets/therapy-video",
+      url: axiosInstance.getUri() + "/assets/therapy-video",
     });
     return data;
   } catch (error) {
@@ -108,7 +108,7 @@ export const getAllVideo = async () => {
 export const getClinics = async (lat: number, lng: number) => {
   try {
     const { data } = await axiosInstance({
-      url: axiosInstance.getUri() + "/api/v1/location/clinic",
+      url: axiosInstance.getUri() + "/location/clinic",
       params: {
         lat,
         lng,

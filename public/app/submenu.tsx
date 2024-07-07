@@ -1,11 +1,11 @@
 import Container from "@/components/Container";
 import CustomButton from "@/components/CustomButton";
 import LinkButton from "@/components/LinkButton";
+import { clearAllCache } from "@/services/cache";
 import { removeItem } from "@/services/secureStore";
 import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { FlatList, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Submenu() {
   const router = useRouter();
@@ -19,19 +19,18 @@ export default function Submenu() {
     },
     {
       text: "My Activity",
-      onPress: () => {
-        console.log("Settings");
-      },
-      href: "/",
+      href: "/activity",
     },
     {
       text: "See All Features",
-      onPress: () => {
-        router.replace("/");
-      },
       href: "/",
     },
   ];
+  const handleLogout = () => {
+    removeItem("access_token");
+    clearAllCache();
+    return router.replace("/login");
+  };
   return (
     <Container>
       <View
@@ -102,10 +101,7 @@ export default function Submenu() {
           }}
           textStyle={{ ...styles.buttonText }}
           text="Logout"
-          onPress={() => {
-            removeItem("access_token");
-            router.replace("/login");
-          }}
+          onPress={handleLogout}
         />
       </View>
     </Container>

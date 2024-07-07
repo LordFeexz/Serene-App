@@ -3,6 +3,7 @@ import ContainerBody from "@/components/ContainerBody";
 import ContainerHead from "@/components/ContainerHead";
 import ContainerLogo from "@/components/ContainerLogo";
 import FooterWithMenu from "@/components/FooterWithMenu";
+import Loading from "@/components/Loading";
 import Logo from "@/components/Logo";
 import AlertComponent from "@/components/SuccessAlert";
 import { getMood, getTodaysMood, postMood } from "@/services/fetchService";
@@ -82,7 +83,7 @@ export default function moodTest() {
     return router.push("/mood-test-result");
   };
 
-  if (loading) return <Text>Loading</Text>;
+  if (loading) return <Loading />;
   return (
     <Container>
       <ContainerLogo>

@@ -3,8 +3,11 @@ import ContainerBody from "@/components/ContainerBody";
 import ContainerHead from "@/components/ContainerHead";
 import ContainerLogo from "@/components/ContainerLogo";
 import FooterWithMenu from "@/components/FooterWithMenu";
+import Loading from "@/components/Loading";
 import Logo from "@/components/Logo";
-import { Link } from "expo-router";
+import { getItem } from "@/services/secureStore";
+import { Link, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 import {
   Dimensions,
   Image,
@@ -17,6 +20,25 @@ import {
 
 export default function Index() {
   const { width, height } = Dimensions.get("window");
+  const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const access_token = await getItem("access_token");
+        if (!access_token) {
+          router.replace("/login");
+          return;
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    })();
+  }, []);
+
   const imagesRoutes = [
     {
       component: (
@@ -73,6 +95,8 @@ export default function Index() {
       link: "/ebook",
     },
   ];
+  if (isLoading) return <Loading />;
+
   return (
     <Container>
       <ContainerLogo>

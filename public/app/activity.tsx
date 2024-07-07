@@ -14,6 +14,8 @@ import {
   Text,
   View,
 } from "react-native";
+
+import moment from "moment-timezone";
 type Histories = {
   created_at: string;
   feature_used: string;
@@ -37,12 +39,22 @@ export default function actiivity() {
     })();
   }, []);
 
-  const formatDate = (date: string) => {
-    const inputDate = new Date(date);
-    const now = new Date();
+  function getCurrentDateWithGMT7() {
+    return new Date(
+      new Date().toLocaleString("en-US", { timeZone: "Asia/Jakarta" })
+    );
+  }
 
+  const formatDate = (date: string) => {
+    const inputDate = moment
+      .tz(date, "YYYY-MM-DD HH:mm:ss", "Etc/GMT-0")
+      .clone()
+      .tz("Etc/GMT-7")
+      .toDate();
+    const now = getCurrentDateWithGMT7();
+    console.log(inputDate, now);
     const diffInSeconds = Math.floor(
-      (inputDate.getTime() - now.getTime()) / 1000
+      (now.getTime() - inputDate.getTime()) / 1000
     );
 
     if (diffInSeconds < 60) {
