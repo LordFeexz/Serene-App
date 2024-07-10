@@ -2,6 +2,7 @@ import CustomKeyboard from "@/components/CustomKeyboard";
 import Footer from "@/components/Footer";
 import LinkButton from "@/components/LinkButton";
 import SuccessAlert from "@/components/SuccessAlert";
+import VerificationButton from "@/components/VerificationButton";
 import { loginRest } from "@/services/fetchService";
 import { getItem, setItem } from "@/services/secureStore";
 import { Toast } from "@/services/toasts";
@@ -24,6 +25,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 export default function Login() {
   const [username, onChangeUsername] = useState("");
   const [password, onChangePassword] = useState("");
+  const [notVerified, setNotVerified] = useState(false);
   const breakpoint1 = 667;
   const padding1 = 50;
   const breakpoint2 = 932;
@@ -59,8 +61,13 @@ export default function Login() {
           return router.replace("/");
         })
         .catch((e) => {
-          console.log(e, "<~ e");
-          Toast(Object.keys(e.data).map((key) => e.data[key])[0], "danger");
+          let message = e.data
+            ? Object.keys(e.data).map((key) => e.data[key])[0]
+            : e.message;
+          if (message == "akun mu belum di verifikasi") {
+            setNotVerified(true);
+          }
+          Toast(message, "danger");
         });
     } catch (error) {
       console.log(error);
@@ -115,6 +122,7 @@ export default function Login() {
                 value={password}
                 placeholder="Password"
                 placeholderTextColor="grey"
+                secureTextEntry={true}
               />
             </View>
           </CustomKeyboard>
@@ -130,9 +138,13 @@ export default function Login() {
               text="Sign up"
               href="/register"
               containerStyle={{}}
-              textStyle={{}}
+              textStyle={{
+                color: "blue",
+              }}
             />
           </View>
+
+          {notVerified && <VerificationButton />}
         </View>
         <Footer />
       </View>
