@@ -14,7 +14,7 @@ export default function FooterWithMenu() {
         gap: 40,
       }}
     >
-      <Pressable onPress={() => router.push("/submenu")}>
+      <Pressable onPress={() => router.replace("/submenu")}>
         <Entypo name="menu" size={48} color="black" />
       </Pressable>
       <Text

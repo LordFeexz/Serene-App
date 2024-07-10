@@ -7,6 +7,7 @@ import Loading from "@/components/Loading";
 import Logo from "@/components/Logo";
 import AlertComponent from "@/components/SuccessAlert";
 import { getMood, getTodaysMood, postMood } from "@/services/fetchService";
+import { Toast } from "@/services/toasts";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -27,6 +28,7 @@ export default function moodTest() {
   const [moods, setMoods] = useState<Moods[]>([]);
   const { moodDate } = useLocalSearchParams();
   const { width } = Dimensions.get("window");
+  const [disableForm, setDisableForm] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -44,7 +46,7 @@ export default function moodTest() {
             "-" +
             `${thisDay < 10 ? "0" + thisDay : thisDay}`;
           const { data: todaysMood } = await getTodaysMood(payloadDate);
-          console.log(todaysMood, "<~ todays mood");
+
           if (todaysMood != null) {
             return moveToResult();
           }
@@ -69,18 +71,23 @@ export default function moodTest() {
 
   const handlPostMood = async (mood_name: string) => {
     try {
-      const { data } = await postMood({
+      setDisableForm(true);
+      const data = await postMood({
         mood_name,
         date: new Date(moodDate as string) || new Date(),
       });
-      AlertComponent("Success add mood!");
+      console.log(data);
+      Toast("Success add mood!", "success");
       moveToResult();
     } catch (error) {
-      console.log(error);
+      Toast(error as string, "danger");
+      return error;
+    } finally {
+      setDisableForm(false);
     }
   };
   const moveToResult = () => {
-    return router.push("/mood-test-result");
+    return router.replace("/mood-test-result");
   };
 
   if (loading) return <Loading />;
@@ -149,6 +156,7 @@ export default function moodTest() {
               gap: 10,
               borderRadius: 20,
             }}
+            disabled={disableForm}
             onPress={() => handlPostMood(mood.text)}
           >
             <Image

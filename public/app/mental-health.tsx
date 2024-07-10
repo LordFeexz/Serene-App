@@ -19,6 +19,8 @@ type Questions = {
 export default function mentalHealth() {
   const [questions, setQuestions] = useState<Questions[]>([]);
   const router = useRouter();
+  const [disableForm, setDisableForm] = useState(false);
+
   const { height } = Dimensions.get("window");
   const handleSetQuestions = (answer: boolean, index: number) => {
     setQuestions((prevQuestions) =>
@@ -39,8 +41,10 @@ export default function mentalHealth() {
     })();
   }, []);
   const handleSubmit = async () => {
+    setDisableForm(true);
     const resultMentalHealth = await postMentalHealth(questions);
-    router.push({
+    setDisableForm(false);
+    router.replace({
       pathname: "/mental-health-result",
       params: {
         score: resultMentalHealth.data.result,
@@ -110,6 +114,7 @@ export default function mentalHealth() {
                 textStyle={{ fontSize: 20, color: "#B8E1F1" }}
                 text="Submit"
                 onPress={handleSubmit}
+                disableForm={disableForm}
               />
             </View>
           </View>

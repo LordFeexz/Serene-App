@@ -34,22 +34,24 @@ function ActiveBox({
   startingMonth,
   month,
   year,
+  startingIndex,
 }: {
   imageUrl?: string;
   index: number;
   startingMonth: number;
   month: number;
   year: number;
+  startingIndex: number;
 }) {
   const { height, width } = Dimensions.get("window");
   const router = useRouter();
 
   const handleMoodTest = () => {
-    router.push({
+    console.log(startingIndex, index);
+    router.replace({
       pathname: "mood-test",
-      params: { moodDate: `${year}-${month}-${index - 12}` },
+      params: { moodDate: `${year}-${month}-${index - startingIndex}` },
     });
-    console.log(index, startingMonth, month, year);
   };
 
   if (!imageUrl) {
@@ -87,6 +89,7 @@ export default function moodTestResult() {
   const [startingMonth, setStartingMonth] = useState(0);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [startingIndex, setStartingIndex] = useState(0);
 
   useEffect(() => {
     (async () => {
@@ -101,13 +104,14 @@ export default function moodTestResult() {
       );
       const dayOfWeek = firstDayOfMonth.getDay();
       setStartingMonth(dayOfWeek + 7);
-      console.log(dayOfWeek);
       const myMoods = [];
       myMoods.push("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat");
 
       for (let i = 0; i < dayOfWeek; i++) {
         myMoods.push(null);
       }
+      setStartingIndex(6 + dayOfWeek);
+      console.log(dayOfWeek);
       data.forEach((el) => {
         myMoods.push(el);
       });
@@ -175,7 +179,6 @@ export default function moodTestResult() {
           justifyContent: "space-around",
           padding: 5,
           gap: 10,
-          borderWidth: 1,
         }}
       >
         <View
@@ -235,6 +238,7 @@ export default function moodTestResult() {
                     startingMonth={startingMonth}
                     month={currentMonth}
                     year={currentYear}
+                    startingIndex={startingIndex}
                   />
                 )}
               </View>

@@ -34,7 +34,7 @@ export default function video() {
     })();
   }, []);
   const handleRoute = (vidId: string) => {
-    router.push({ pathname: "video-player", params: { vidId: vidId } });
+    router.replace({ pathname: "video-player", params: { vidId: vidId } });
   };
   return (
     <Container>

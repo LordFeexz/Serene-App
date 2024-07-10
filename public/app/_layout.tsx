@@ -1,5 +1,6 @@
 import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { Stack } from "expo-router";
+import FlashMessage from "react-native-flash-message";
 
 export default function RootLayout() {
   return (
@@ -9,10 +10,10 @@ export default function RootLayout() {
           headerShown: false,
         }}
       >
+        <Stack.Screen name="index" />
         <Stack.Screen name="activity" />
         <Stack.Screen name="login" />
         <Stack.Screen name="register" />
-        <Stack.Screen name="index" />
         <Stack.Screen name="submenu" />
         <Stack.Screen name="mental-health" />
         <Stack.Screen name="mental-health-result" />
@@ -22,6 +23,7 @@ export default function RootLayout() {
         <Stack.Screen name="video-player" />
         <Stack.Screen name="mood-test-result" />
       </Stack>
+      <FlashMessage position={"top"} />
     </ThemeProvider>
   );
 }

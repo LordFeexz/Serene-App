@@ -6,6 +6,7 @@ type Props = {
   textStyle?: object;
   containerStyle?: object;
   onPress: () => void;
+  disableForm?: boolean;
 };
 
 export default function CustomButton({
@@ -13,6 +14,7 @@ export default function CustomButton({
   textStyle,
   containerStyle,
   onPress,
+  disableForm,
 }: Props) {
   return (
     <Pressable
@@ -20,6 +22,7 @@ export default function CustomButton({
       style={{
         ...containerStyle,
       }}
+      disabled={disableForm}
     >
       <Text style={{ ...textStyle }}>{text}</Text>
     </Pressable>

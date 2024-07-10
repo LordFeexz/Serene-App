@@ -1,5 +1,9 @@
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { axiosInstance } from "./axiosInstance";
+
+type CustomError = {
+  message: string;
+};
 
 export const getMood = async () => {
   try {
@@ -8,18 +12,82 @@ export const getMood = async () => {
     });
     return data;
   } catch (error) {
+    if (error && error instanceof AxiosError) {
+      console.log(error?.response?.data);
+      throw error.response?.data;
+    }
     console.log(error, "<~");
   }
 };
 
-export const getTodaysMood = async (date: string) => {
+export const loginRest = async (payload: {
+  email: string;
+  password: string;
+}) => {
   try {
-    const { data } = await axios({
-      url: axiosInstance.getUri() + "/mood/" + date,
+    const { data } = await axiosInstance({
+      url: axiosInstance.getUri() + "/user/login",
+      method: "POST",
+      data: payload,
+    });
+
+    return data;
+  } catch (error) {
+    if (error && error instanceof AxiosError) {
+      throw error.response?.data;
+    }
+    console.log(error);
+    return error;
+  }
+};
+
+export const registerRest = async (payload: {
+  email: string;
+  password: string;
+  username: string;
+}) => {
+  try {
+    const { data } = await axiosInstance({
+      url: axiosInstance.getUri() + "/user/register",
+      method: "POST",
+      data: payload,
+    });
+
+    return data;
+  } catch (error) {
+    if (error && error instanceof AxiosError) {
+      console.log(error?.response?.data);
+      throw error.response?.data;
+    }
+    return error;
+  }
+};
+
+export const myDataRest = async () => {
+  try {
+    const { data } = await axiosInstance({
+      url: axiosInstance.getUri() + "/user/",
     });
     return data;
   } catch (error) {
-    console.log(error, "<~");
+    if (error && error instanceof AxiosError) {
+      console.log(error?.response?.data);
+      throw error.response?.data;
+    }
+    return error;
+  }
+};
+export const getTodaysMood = async (date: string) => {
+  try {
+    const { data } = await axiosInstance({
+      url: axiosInstance.getUri() + "/mood/me/" + date,
+    });
+    return data;
+  } catch (error) {
+    if (error && error instanceof AxiosError) {
+      console.log(error?.response?.data);
+      throw error.response?.data;
+    }
     return { data: null };
   }
 };
@@ -34,10 +102,13 @@ export const getMyMoods = async () => {
     const { data } = await axiosInstance({
       url: axiosInstance.getUri() + "/mood/me",
     });
-    console.log(data);
     return data;
   } catch (error) {
-    console.log(error, "<~");
+    if (error && error instanceof AxiosError) {
+      console.log(error?.response?.data.message);
+      throw error.response?.data;
+    }
+    return error;
   }
 };
 export const postMood = async (payload: PostMoodPayload) => {
@@ -50,7 +121,8 @@ export const postMood = async (payload: PostMoodPayload) => {
     return data;
   } catch (error) {
     if (error && error instanceof AxiosError) {
-      console.log(error?.response?.data);
+      console.log(error?.response?.data.message);
+      throw error.response?.data.message;
     }
   }
 };
@@ -62,7 +134,10 @@ export const getMentalHealth = async () => {
     });
     return data;
   } catch (error) {
-    console.log(error);
+    if (error && error instanceof AxiosError) {
+      console.log(error?.response?.data);
+      throw error.response?.data;
+    }
   }
 };
 type Questions = {
@@ -79,7 +154,11 @@ export const postMentalHealth = async (questions: Questions[]) => {
     });
     return data;
   } catch (error) {
-    console.log(error);
+    if (error && error instanceof AxiosError) {
+      console.log(error?.response?.data);
+      throw error.response?.data;
+    }
+    return error;
   }
 };
 
@@ -90,6 +169,10 @@ export const getHistory = async () => {
     });
     return data;
   } catch (error) {
+    if (error && error instanceof AxiosError) {
+      console.log(error?.response?.data);
+      throw error.response?.data;
+    }
     return error;
   }
 };
@@ -101,6 +184,10 @@ export const getAllVideo = async () => {
     });
     return data;
   } catch (error) {
+    if (error && error instanceof AxiosError) {
+      console.log(error?.response?.data);
+      throw error.response?.data;
+    }
     return error;
   }
 };
@@ -116,6 +203,10 @@ export const getClinics = async (lat: number, lng: number) => {
     });
     return data;
   } catch (error) {
+    if (error && error instanceof AxiosError) {
+      console.log(error?.response?.data);
+      throw error.response?.data;
+    }
     return error;
   }
 };

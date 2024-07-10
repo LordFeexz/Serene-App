@@ -1,32 +1,29 @@
-import Container from "@/components/Container";
+import CustomKeyboard from "@/components/CustomKeyboard";
 import Footer from "@/components/Footer";
 import LinkButton from "@/components/LinkButton";
+import SuccessAlert from "@/components/SuccessAlert";
+import { loginRest } from "@/services/fetchService";
+import { getItem, setItem } from "@/services/secureStore";
+import { Toast } from "@/services/toasts";
 import { FontAwesome6 } from "@expo/vector-icons";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { useRouter } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { router } from "expo-router";
+import { useEffect, useState } from "react";
 import {
   Dimensions,
   Image,
-  Keyboard,
-  KeyboardAvoidingView,
   Platform,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from "react-native";
-import SuccessAlert from "@/components/SuccessAlert";
-import { getItem, setItem } from "@/services/secureStore";
-import CustomKeyboard from "@/components/CustomKeyboard";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function Login() {
   const [username, onChangeUsername] = useState("");
   const [password, onChangePassword] = useState("");
-  const router = useRouter();
   const breakpoint1 = 667;
   const padding1 = 50;
   const breakpoint2 = 932;
@@ -35,6 +32,7 @@ export default function Login() {
   const m = (padding2 - padding1) / (breakpoint2 - breakpoint1);
   const c = padding1 - m * breakpoint1;
   const paddingBottom = m * height + c;
+  const [disableForm, setDisableForm] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -50,25 +48,25 @@ export default function Login() {
   }, []);
 
   const handleLogin = () => {
-    fetch("https://42jz4hld-3001.asse.devtunnels.ms/api/v1/user/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: username,
-        password: password,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(typeof data.data);
-        console.log(data);
-        setItem("access_token", data.data);
-        SuccessAlert("Login Success");
-        return router.replace("/");
-      })
-      .catch((e) => console.log(e, "<~"));
+    try {
+      setDisableForm(true);
+      loginRest({ email: username, password })
+        .then(async (data) => {
+          console.log(data.code);
+          if (data.code == 401) throw { data: { message: data.message } };
+          await setItem("access_token", data.data);
+          Toast("Login Success", "success");
+          return router.replace("/");
+        })
+        .catch((e) => {
+          console.log(e, "<~ e");
+          Toast(Object.keys(e.data).map((key) => e.data[key])[0], "danger");
+        });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setDisableForm(false);
+    }
   };
   return (
     <KeyboardAwareScrollView
@@ -103,6 +101,8 @@ export default function Login() {
                 onChangeText={onChangeUsername}
                 value={username}
                 style={styles.textInput}
+                placeholder="Email"
+                placeholderTextColor="grey"
               />
             </View>
           </CustomKeyboard>
@@ -113,20 +113,17 @@ export default function Login() {
                 style={styles.textInput}
                 onChangeText={onChangePassword}
                 value={password}
+                placeholder="Password"
+                placeholderTextColor="grey"
               />
             </View>
           </CustomKeyboard>
           <View style={styles.signInContainer}>
-            <Pressable onPress={handleLogin}>
+            <Pressable onPress={handleLogin} disabled={disableForm}>
               <Text style={styles.signInText}>Sign in</Text>
             </Pressable>
           </View>
           <Text style={{ fontWeight: "bold", fontSize: 20 }}>OR</Text>
-          <View style={styles.loginIconsContainer}>
-            <AntDesign name="google" size={36} color="black" />
-            <AntDesign name="twitter" size={36} color="black" />
-            <AntDesign name="facebook-square" size={36} color="black" />
-          </View>
           <View style={{ flexDirection: "row" }}>
             <Text>Doesn't have an account </Text>
             <LinkButton

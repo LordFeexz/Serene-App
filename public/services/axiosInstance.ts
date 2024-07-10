@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getItem } from "./secureStore";
 
-export const axiosInstance = axios.create({
+const axiosInstance = axios.create({
   baseURL: "https://42jz4hld-3001.asse.devtunnels.ms/api/v1",
 });
 
@@ -13,3 +13,4 @@ axiosInstance.interceptors.request.use(async (config) => {
   }
   return config;
 });
+export { axiosInstance };

@@ -2,13 +2,28 @@ import Container from "@/components/Container";
 import CustomButton from "@/components/CustomButton";
 import LinkButton from "@/components/LinkButton";
 import { clearAllCache } from "@/services/cache";
+import { myDataRest } from "@/services/fetchService";
 import { removeItem } from "@/services/secureStore";
+import { Toast } from "@/services/toasts";
 import { AntDesign } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { router, useNavigationContainerRef } from "expo-router";
+import { useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
 export default function Submenu() {
-  const router = useRouter();
+  const rootNavigation = useNavigationContainerRef();
+  const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = (await myDataRest()) as { data: { username: string } };
+        setUsername(data.username);
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, []);
   const buttons = [
     {
       text: "Account",
@@ -27,9 +42,16 @@ export default function Submenu() {
     },
   ];
   const handleLogout = () => {
-    removeItem("access_token");
-    clearAllCache();
-    return router.replace("/login");
+    try {
+      removeItem("access_token");
+      clearAllCache();
+      Toast("Logout Sukses!", "success");
+      if (!rootNavigation) throw new Error();
+      router.dismissAll();
+      return router.replace("/login");
+    } catch (error) {
+      return router.replace("/login");
+    }
   };
   return (
     <Container>
@@ -56,7 +78,7 @@ export default function Submenu() {
       >
         <AntDesign name="user" size={50} color="black" />
         <View style={{ flexDirection: "column" }}>
-          <Text>Tiara</Text>
+          <Text>{username}</Text>
           <Text>Pengguna</Text>
         </View>
       </View>

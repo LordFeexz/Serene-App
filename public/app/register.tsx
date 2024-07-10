@@ -1,5 +1,7 @@
-import Container from "@/components/Container";
 import Footer from "@/components/Footer";
+import SuccessAlert from "@/components/SuccessAlert";
+import { registerRest } from "@/services/fetchService";
+import { Toast } from "@/services/toasts";
 import { AntDesign, FontAwesome6 } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -13,13 +15,13 @@ import {
   TextInput,
   View,
 } from "react-native";
-import SuccessAlert from "@/components/SuccessAlert";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function register() {
   const [username, onChangeUsername] = useState("");
   const [password, onChangePassword] = useState("");
   const [email, onChangeEmail] = useState("");
+  const [disableForm, setDisableForm] = useState(false);
 
   const breakpoint1 = 667;
   const padding1 = 50;
@@ -30,23 +32,21 @@ export default function register() {
   const c = padding1 - m * breakpoint1;
   const paddingBottom = m * height + c;
   const handleRegister = () => {
-    fetch("https://42jz4hld-3001.asse.devtunnels.ms/api/v1/user/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: username,
-        password: password,
-        email: email,
-      }),
-    })
-      .then((res) => res.json())
-      .then(() => {
-        SuccessAlert("Register Success");
-        router.push("/login");
-      })
-      .catch(console.log);
+    try {
+      setDisableForm(true);
+      registerRest({ email, password, username })
+        .then(() => {
+          SuccessAlert("Register Success");
+          router.push("/login");
+        })
+        .catch((e) => {
+          Toast(Object.keys(e.data).map((key) => e.data[key])[0], "danger");
+        });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setDisableForm(false);
+    }
   };
   return (
     <KeyboardAwareScrollView
@@ -74,6 +74,8 @@ export default function register() {
               onChangeText={onChangeEmail}
               value={email}
               style={styles.textInput}
+              placeholder="Email"
+              placeholderTextColor="grey"
             />
           </View>
           <View style={styles.inputStyle}>
@@ -82,6 +84,8 @@ export default function register() {
               onChangeText={onChangeUsername}
               value={username}
               style={styles.textInput}
+              placeholder="Username"
+              placeholderTextColor="grey"
             />
           </View>
           <View style={styles.inputStyle}>
@@ -90,10 +94,12 @@ export default function register() {
               style={styles.textInput}
               onChangeText={onChangePassword}
               value={password}
+              placeholder="Password"
+              placeholderTextColor="grey"
             />
           </View>
           <View style={styles.signInContainer}>
-            <Pressable onPress={handleRegister}>
+            <Pressable onPress={handleRegister} disabled={disableForm}>
               <Text style={styles.signInText}>Sign Up</Text>
             </Pressable>
           </View>
