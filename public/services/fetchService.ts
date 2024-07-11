@@ -1,10 +1,6 @@
 import { AxiosError } from "axios";
 import { axiosInstance } from "./axiosInstance";
 
-type CustomError = {
-  message: string;
-};
-
 export const getMood = async () => {
   try {
     const { data } = await axiosInstance({
@@ -17,6 +13,22 @@ export const getMood = async () => {
       throw error.response?.data;
     }
     console.log(error, "<~");
+  }
+};
+export const postResendEmail = async (email: string) => {
+  try {
+    const { data } = await axiosInstance({
+      url: axiosInstance.getUri() + "/user/resend-email",
+      method: "POST",
+      data: { email },
+    });
+    return data;
+  } catch (error) {
+    if (error && error instanceof AxiosError) {
+      console.log(error?.response?.data);
+      throw error.response?.data;
+    }
+    throw error;
   }
 };
 

@@ -96,6 +96,7 @@ export default function register() {
               value={password}
               placeholder="Password"
               placeholderTextColor="grey"
+              secureTextEntry={true}
             />
           </View>
           <View style={styles.signInContainer}>

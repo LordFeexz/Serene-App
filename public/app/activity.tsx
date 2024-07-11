@@ -39,40 +39,19 @@ export default function actiivity() {
     })();
   }, []);
 
-  function getCurrentDateWithGMT7() {
-    return new Date(
-      new Date().toLocaleString("en-US", { timeZone: "Asia/Jakarta" })
-    );
-  }
-
   const formatDate = (date: string) => {
+    const timeFormat: Intl.DateTimeFormatOptions = {
+      month: "long",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    };
+
     const inputDate = moment
-      .tz(date, "YYYY-MM-DD HH:mm:ss", "Etc/GMT-0")
-      .clone()
-      .tz("Etc/GMT-7")
+      .tz(date, "YYYY-MM-DD HH:mm:ss", "Etc/GMT-7")
       .toDate();
-    const now = getCurrentDateWithGMT7();
-    console.log(inputDate, now);
-    const diffInSeconds = Math.floor(
-      (now.getTime() - inputDate.getTime()) / 1000
-    );
-
-    if (diffInSeconds < 60) {
-      return `${diffInSeconds} detik yang lalu`;
-    }
-
-    const diffInMinutes = Math.floor(diffInSeconds / 60);
-    if (diffInMinutes < 60) {
-      return `${diffInMinutes} menit yang lalu`;
-    }
-
-    const diffInHours = Math.floor(diffInMinutes / 60);
-    if (diffInHours < 24 * 30) {
-      return `${diffInHours} jam yang lalu`;
-    }
-
-    const diffInMonths = Math.floor(diffInHours / (24 * 30));
-    return `${diffInMonths} bulan yang lalu`;
+    return new Date(inputDate).toLocaleDateString("id-ID", timeFormat);
   };
   return (
     <Container>

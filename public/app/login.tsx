@@ -144,7 +144,7 @@ export default function Login() {
             />
           </View>
 
-          {notVerified && <VerificationButton />}
+          {notVerified && <VerificationButton email={username} />}
         </View>
         <Footer />
       </View>

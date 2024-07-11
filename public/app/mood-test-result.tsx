@@ -20,7 +20,7 @@ function DisabledBox() {
   return (
     <View
       style={{
-        width: width / 12,
+        width: (width - 180) / 7,
         height: height / 24,
         backgroundColor: "gray",
       }}
@@ -46,7 +46,6 @@ function ActiveBox({
   const router = useRouter();
 
   const handleMoodTest = () => {
-    console.log(year, month, index - startingIndex);
     router.replace({
       pathname: "mood-test",
       params: { moodDate: `${year}-${month}-${index - startingIndex}` },
@@ -58,7 +57,7 @@ function ActiveBox({
       <TouchableOpacity
         onPress={handleMoodTest}
         style={{
-          width: width / 12,
+          width: (width - 180) / 7,
           height: height / 24,
           backgroundColor: "#B8E1F1",
         }}
@@ -68,7 +67,7 @@ function ActiveBox({
   return (
     <View
       style={{
-        width: width / 12,
+        width: (width - 180) / 7,
         height: height / 24,
         backgroundColor: "#B8E1F1",
         justifyContent: "flex-end",
@@ -120,7 +119,6 @@ export default function moodTestResult() {
       })) as {
         data: { name: string; image_url: string }[];
       };
-      console.log(data);
 
       const today = new Date(`${fetchYear}-${fetchMonth}-01`);
       const firstDayOfMonth = new Date(
@@ -138,7 +136,6 @@ export default function moodTestResult() {
       }
       setStartingIndex(6 + dayOfWeek);
       data.forEach((el) => {
-        console.log(el);
         myMoods.push(el);
       });
       setMyMoods(myMoods);
@@ -228,6 +225,7 @@ export default function moodTestResult() {
             gap: 10,
           }}
         >
+          {/* <HeaderMonth /> */}
           <View
             style={{
               borderRadius: 10,
@@ -255,44 +253,47 @@ export default function moodTestResult() {
               <AntDesign name="rightcircleo" size={20} color="white" />
             </TouchableOpacity>
           </View>
-          {/* <HeaderMonth /> */}
-          <View
-            style={{
-              flexDirection: "row",
-              gap: 10,
-              paddingHorizontal: 20,
-              paddingVertical: 10,
-              flexWrap: "wrap",
-              // justifyContent: "space-evenly",
-            }}
-          >
-            {myMoods.map((el, index) => (
-              <View key={index}>
-                {typeof el == "string" ? (
-                  <View
-                    style={{
-                      width: width / 12,
-                      height: height / 24,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Text>{el}</Text>
-                  </View>
-                ) : !el ? (
-                  <DisabledBox />
-                ) : (
-                  <ActiveBox
-                    imageUrl={el?.image_url}
-                    index={index}
-                    startingMonth={startingMonth}
-                    month={currentMonth}
-                    year={currentYear}
-                    startingIndex={startingIndex}
-                  />
-                )}
-              </View>
-            ))}
+
+          {/* <HeaderMonth  end/> */}
+
+          <View style={{ justifyContent: "center", padding: 10 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 10,
+                paddingHorizontal: 20,
+                paddingVertical: 10,
+                flexWrap: "wrap",
+              }}
+            >
+              {myMoods.map((el, index) => (
+                <View key={index}>
+                  {typeof el == "string" ? (
+                    <View
+                      style={{
+                        width: (width - 180) / 7,
+                        height: height / 24,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Text style={{ fontWeight: "bold" }}>{el}</Text>
+                    </View>
+                  ) : !el ? (
+                    <DisabledBox />
+                  ) : (
+                    <ActiveBox
+                      imageUrl={el?.image_url}
+                      index={index}
+                      startingMonth={startingMonth}
+                      month={currentMonth}
+                      year={currentYear}
+                      startingIndex={startingIndex}
+                    />
+                  )}
+                </View>
+              ))}
+            </View>
           </View>
         </View>
       </ContainerBody>
