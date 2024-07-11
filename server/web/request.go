@@ -47,3 +47,7 @@ type UserMoodQuery struct {
 	Month uint16 `form:"month" binding:"required"`
 	Year  uint16 `form:"year" binding:"required"`
 }
+
+type UserVerifyProps struct {
+	Token string `form:"token" json:"token" binding:"required" validate:"required"`
+}

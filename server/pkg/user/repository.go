@@ -28,3 +28,8 @@ func (r *UserRepoImpl) Create(ctx context.Context, data *User) error {
 		data.Username, data.Email, data.Password, data.IsVerified, data.CreatedAt, data.UpdatedAt,
 	).Scan(&data.Id)
 }
+
+func (r *UserRepoImpl) UpdateVerify(ctx context.Context, id string) (err error) {
+	_, err = r.DB.ExecContext(ctx, h.LogQuery(fmt.Sprintf(`UPDATE "%s" SET is_verified = true WHERE id = $1`, TABLE_NAME)), id)
+	return
+}

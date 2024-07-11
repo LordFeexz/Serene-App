@@ -11,6 +11,7 @@ import (
 type UserRepo interface {
 	GetDb() *sql.DB
 	Create(ctx context.Context, data *User) error
+	UpdateVerify(ctx context.Context, id string) error
 }
 
 type UserRepoImpl struct{ *sql.DB }

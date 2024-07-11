@@ -17,6 +17,7 @@ type UserController interface {
 	Login(c *gin.Context)
 	ResendEmailVerification(c *gin.Context)
 	Me(c *gin.Context)
+	Verify(c *gin.Context)
 }
 
 type UserControllerImpl struct {
