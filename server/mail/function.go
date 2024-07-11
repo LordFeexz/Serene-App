@@ -3,6 +3,7 @@ package mail
 import (
 	"io"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"gopkg.in/gomail.v2"
@@ -38,7 +39,12 @@ func NewMessage(sub, html string, to []string) *gomail.Message {
 }
 
 func GetEmailVerif(url string) (string, error) {
-	file, err := os.Open("./mail/assets/email-verification.html")
+	pwd, err := os.Getwd()
+	if err != nil {
+		return "", err
+	}
+
+	file, err := os.Open(filepath.Join(pwd, "mail", "assets", "email-verification.html"))
 	if err != nil {
 		return "", err
 	}
