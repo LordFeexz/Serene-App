@@ -131,9 +131,9 @@ export default function Login() {
               <Text style={styles.signInText}>Sign in</Text>
             </Pressable>
           </View>
-          <Text style={{ fontWeight: "bold", fontSize: 20 }}>OR</Text>
+
           <View style={{ flexDirection: "row" }}>
-            <Text>Doesn't have an account </Text>
+            <Text>Doesn't have an account ?</Text>
             <LinkButton
               text="Sign up"
               href="/register"

@@ -8,7 +8,7 @@ import { getMyMoods } from "@/services/fetchService";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Dimensions, Image, Text, TouchableOpacity, View } from "react-native";
-
+import { AntDesign } from "@expo/vector-icons";
 type MyMoods = {
   image_url: string;
   name: string;
@@ -31,7 +31,6 @@ function DisabledBox() {
 function ActiveBox({
   imageUrl,
   index,
-  startingMonth,
   month,
   year,
   startingIndex,
@@ -47,7 +46,7 @@ function ActiveBox({
   const router = useRouter();
 
   const handleMoodTest = () => {
-    console.log(startingIndex, index);
+    console.log(year, month, index - startingIndex);
     router.replace({
       pathname: "mood-test",
       params: { moodDate: `${year}-${month}-${index - startingIndex}` },
@@ -91,12 +90,39 @@ export default function moodTestResult() {
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [startingIndex, setStartingIndex] = useState(0);
 
-  useEffect(() => {
-    (async () => {
-      const { data } = (await getMyMoods()) as {
+  const fetchGetMyMoods = async (action?: "prev" | "next") => {
+    try {
+      const fetchMonth =
+        action == "prev"
+          ? currentMonth == 1
+            ? 12
+            : currentMonth - 1
+          : action == "next"
+          ? currentMonth == 12
+            ? 1
+            : currentMonth + 1
+          : currentMonth;
+
+      const fetchYear =
+        action == "prev"
+          ? currentMonth == 1
+            ? currentYear - 1
+            : currentYear
+          : action == "next"
+          ? currentMonth == 12
+            ? currentYear + 1
+            : currentYear
+          : currentYear;
+
+      const { data } = (await getMyMoods({
+        year: String(fetchYear),
+        month: String(fetchMonth),
+      })) as {
         data: { name: string; image_url: string }[];
       };
-      const today = new Date();
+      console.log(data);
+
+      const today = new Date(`${fetchYear}-${fetchMonth}-01`);
       const firstDayOfMonth = new Date(
         today.getFullYear(),
         today.getMonth(),
@@ -104,20 +130,31 @@ export default function moodTestResult() {
       );
       const dayOfWeek = firstDayOfMonth.getDay();
       setStartingMonth(dayOfWeek + 7);
-      const myMoods = [];
+      let myMoods = [];
       myMoods.push("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat");
 
       for (let i = 0; i < dayOfWeek; i++) {
         myMoods.push(null);
       }
       setStartingIndex(6 + dayOfWeek);
-      console.log(dayOfWeek);
       data.forEach((el) => {
+        console.log(el);
         myMoods.push(el);
       });
       setMyMoods(myMoods);
+      setCurrentMonth(fetchMonth);
+      setCurrentYear(fetchYear);
+      myMoods = [];
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    (async () => {
+      await fetchGetMyMoods();
     })();
   }, []);
+  // useEffect(() => {}, [currentMonth, currentYear]);
 
   const getMonth = () => {
     const months = [
@@ -135,7 +172,7 @@ export default function moodTestResult() {
       "Dec",
     ];
 
-    return months[new Date().getMonth()];
+    return months[currentMonth - 1];
   };
 
   return (
@@ -197,13 +234,26 @@ export default function moodTestResult() {
               backgroundColor: "#1A4789",
               padding: 20,
               width: "60%",
+              flexDirection: "row",
+              justifyContent: "space-around",
+              alignItems: "center",
             }}
           >
+            <TouchableOpacity onPress={() => fetchGetMyMoods("prev")}>
+              <AntDesign name="leftcircleo" size={20} color="white" />
+            </TouchableOpacity>
             <Text
-              style={{ color: "white", fontSize: 20, fontWeight: "semibold" }}
+              style={{
+                color: "white",
+                fontSize: 20,
+                fontWeight: "semibold",
+              }}
             >
               {getMonth()}
             </Text>
+            <TouchableOpacity onPress={() => fetchGetMyMoods("next")}>
+              <AntDesign name="rightcircleo" size={20} color="white" />
+            </TouchableOpacity>
           </View>
           {/* <HeaderMonth /> */}
           <View

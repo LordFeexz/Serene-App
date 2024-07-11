@@ -85,8 +85,7 @@ export const getTodaysMood = async (date: string) => {
     return data;
   } catch (error) {
     if (error && error instanceof AxiosError) {
-      console.log(error?.response?.data);
-      throw error.response?.data;
+      return { data: null };
     }
     return { data: null };
   }
@@ -97,10 +96,20 @@ type PostMoodPayload = {
   date: Date;
 };
 
-export const getMyMoods = async () => {
+export const getMyMoods = async ({
+  year,
+  month,
+}: {
+  year: string;
+  month: string;
+}) => {
   try {
     const { data } = await axiosInstance({
       url: axiosInstance.getUri() + "/mood/me",
+      params: {
+        year,
+        month,
+      },
     });
     return data;
   } catch (error) {
