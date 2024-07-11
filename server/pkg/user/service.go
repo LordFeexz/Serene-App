@@ -2,7 +2,6 @@ package user
 
 import (
 	"fmt"
-	"os"
 	h "serene-app/helpers"
 	"serene-app/mail"
 
@@ -14,8 +13,8 @@ func NewService(m mail.Mailer) UserService {
 }
 
 func (s *UserServiceImpl) SendEmailVerification(data User) error {
-	html, _ := mail.GetEmailVerif(fmt.Sprintf("%s/user/verify?token=%s",
-		os.Getenv("APPLICATION_BASE_URL"),
+	html, _ := mail.GetEmailVerif(fmt.Sprintf("sereneApp://login?tokenVerif=%s",
+
 		h.GenerateJwtToken(data.Id, data.Username, data.Email, data.IsVerified),
 	))
 	msg := mail.NewMessage("Email Verification", html, []string{data.Email})
