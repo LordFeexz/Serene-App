@@ -186,7 +186,7 @@ func (ctr *MoodControllerImpl) GetMyMood(c *gin.Context) {
 			um.id, um.user_id, um.mood_id, um.date, um.created_at, um.updated_at, m.name as mood_name
 			FROM %s um
 			LEFT JOIN %s m ON um.mood_id = m.id
-			WHERE um.user_id = $1 AND ( um.created_at BETWEEN $2 AND $3 )
+			WHERE um.user_id = $1 AND ( um.date BETWEEN $2 AND $3 )
 			`, usermood.TABLE_NAME, mood.TABLE_NAME),
 		),
 		ctr.userService.GetUserFromRequestCtx(c).Id,
