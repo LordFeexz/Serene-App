@@ -13,7 +13,8 @@ func NewService(m mail.Mailer) UserService {
 }
 
 func (s *UserServiceImpl) SendEmailVerification(data User) error {
-	html, _ := mail.GetEmailVerif(fmt.Sprintf("sereneapp://login?token=%s",
+	html, _ := mail.GetEmailVerif(fmt.Sprintf("%s/user/verify?token=%s",
+		h.GetEnvOrDefault("BASE_URL", "http://localhost:3001/api/v1"),
 		h.GenerateJwtToken(data.Id, data.Username, data.Email, data.IsVerified),
 	))
 	msg := mail.NewMessage("Email Verification", html, []string{data.Email})

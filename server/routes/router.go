@@ -18,6 +18,7 @@ func NewRoutes(
 ) func(addr ...string) error {
 	r := router{gin.Default()}
 	r.Use(gin.Recovery())
+	r.LoadHTMLGlob("mail/assets/*")
 	r.Use(md.Cors())
 	r.Use(md.RateLimiter(middlewares.FIFTY_PER_SECOND))
 	r.Use(md.XSSProtection())
@@ -30,7 +31,7 @@ func NewRoutes(
 	r.userRoute(groupRoutes, user, md)
 	r.historyRoute(groupRoutes, history, md)
 	r.testRoute(groupRoutes, test, md)
-	r.assetRoute(groupRoutes, asset, md)
+	r.assetRoute(groupRoutes, asset)
 	r.moodRoute(groupRoutes, mood, md)
 	r.locationRoute(groupRoutes, location, md)
 

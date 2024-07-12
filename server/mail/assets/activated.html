@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Serene app</title>
+    <style>
+      body {
+        margin: 0 auto;
+        width: 100%;
+        min-height: 100lvh;
+      }
+      .container {
+        display: none;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="container">
+      <h1>Selamat {{.Name}}, akun kamu telah aktif!</h1>
+      <a
+        style="display: none"
+        target="_blank"
+        rel="noopener noreferrer"
+        id="button"
+        >Buka aplikasi serene</a
+      >
+    </section>
+  </body>
+</html>

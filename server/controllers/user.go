@@ -152,47 +152,49 @@ func (ctr *UserControllerImpl) Me(c *gin.Context) {
 	ctr.WriteResponse(c, 200, "ok", ctr.userService.GetUserFromRequestCtx(c))
 }
 
-func (ctr *UserControllerImpl) Verify(c *gin.Context) {
-	var body web.UserVerifyProps
-	c.ShouldBind(&body)
+func (ctr *UserControllerImpl) VerifyPage(filename string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		token := c.Query("token")
+		if token == "" {
+			ctr.AbortResponse(c, exceptions.NewError("token hilang atau tidak valid", 401))
+			return
+		}
 
-	if err := ctr.validate.Struct(&body); err != nil {
-		ctr.WriteValidationErrResponse(c, err)
-		return
+		claims, err := h.VerifyToken(token)
+		if err != nil {
+			ctr.AbortResponse(c, exceptions.NewError("token hilang atau tidak valid", 401))
+			return
+		}
+
+		var data user.User
+		if err := ctr.userRepo.GetDb().QueryRowContext(
+			c.Request.Context(),
+			h.LogQuery(
+				fmt.Sprintf(`SELECT id, username, email, is_verified, updated_at FROM "%s" WHERE id = $1`, user.TABLE_NAME),
+			),
+			claims["id"],
+		).Scan(
+			&data.Id, &data.Username, &data.Email, &data.IsVerified, &data.UpdatedAt,
+		); err != nil && err != sql.ErrNoRows {
+			ctr.AbortResponse(c, err)
+			return
+		} else if err == sql.ErrNoRows {
+			ctr.AbortResponse(c, exceptions.NewError("token hilang atau tidak valid", 401))
+			return
+		}
+
+		if data.IsVerified {
+			ctr.AbortResponse(c, exceptions.NewError("akun sudah diverifikasi", 409))
+			return
+		}
+
+		if err := ctr.userRepo.UpdateVerify(c.Request.Context(), data.Id); err != nil {
+			ctr.AbortResponse(c, err)
+			return
+		}
+
+		c.HTML(200, filename, gin.H{
+			"Name": data.Username,
+		})
 	}
-
-	claims, err := h.VerifyToken(body.Token)
-	if err != nil {
-		ctr.AbortResponse(c, exceptions.NewError("token tidak valid", 401))
-		return
-	}
-
-	var data user.User
-	if err := ctr.userRepo.GetDb().QueryRowContext(
-		c.Request.Context(),
-		h.LogQuery(
-			fmt.Sprintf(`SELECT id, email, is_verified, updated_at FROM "%s" WHERE id = $1`, user.TABLE_NAME),
-		),
-		claims["id"],
-	).Scan(
-		&data.Id, &data.Email, &data.IsVerified, &data.UpdatedAt,
-	); err != nil && err != sql.ErrNoRows {
-		ctr.AbortResponse(c, err)
-		return
-	} else if err == sql.ErrNoRows {
-		ctr.AbortResponse(c, exceptions.NewError("token tidak valid", 401))
-		return
-	}
-
-	if data.IsVerified {
-		ctr.AbortResponse(c, exceptions.NewError("akun sudah diverifikasi", 409))
-		return
-	}
-
-	if err := ctr.userRepo.UpdateVerify(c.Request.Context(), data.Id); err != nil {
-		ctr.AbortResponse(c, err)
-		return
-	}
-
-	ctr.WriteResponse(c, 200, "success", nil)
 }
