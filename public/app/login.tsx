@@ -3,7 +3,7 @@ import Footer from "@/components/Footer";
 import LinkButton from "@/components/LinkButton";
 import SuccessAlert from "@/components/SuccessAlert";
 import VerificationButton from "@/components/VerificationButton";
-import { loginRest } from "@/services/fetchService";
+import { loginRest, verifToken } from "@/services/fetchService";
 import { getItem, setItem } from "@/services/secureStore";
 import { Toast } from "@/services/toasts";
 import { FontAwesome6 } from "@expo/vector-icons";
@@ -22,6 +22,8 @@ import {
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
+import { useRoute } from "@react-navigation/native";
+
 export default function Login() {
   const [username, onChangeUsername] = useState("");
   const [password, onChangePassword] = useState("");
@@ -35,6 +37,8 @@ export default function Login() {
   const c = padding1 - m * breakpoint1;
   const paddingBottom = m * height + c;
   const [disableForm, setDisableForm] = useState(false);
+  const route = useRoute();
+  const { token } = route.params as any;
 
   useEffect(() => {
     (async () => {
@@ -42,6 +46,15 @@ export default function Login() {
         const access_token = await getItem("access_token");
         if (access_token) {
           return router.replace("/");
+        }
+
+        if (token) {
+          try {
+            const { data } = await verifToken(token);
+            if (data) Toast("Verifikasi berhasil!", "success");
+          } catch (error) {
+            Toast("Invalid Token", "danger");
+          }
         }
       } catch (error) {
         console.log(error);
