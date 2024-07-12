@@ -75,13 +75,14 @@ func (ctr *AssetControllerImpl) GetOneTheraphyVideo(c *gin.Context) {
 }
 
 func (ctr *AssetControllerImpl) GetAllSound(c *gin.Context) {
-	baseUrl := h.GetEnvOrDefault("BASE_URL", "http://localhost:3001/api/v1") + "/assets/sound"
+	baseUrl := h.GetEnvOrDefault("BASE_URL", "http://localhost:3001/api/v1") + "/assets"
 	datas := make([]map[string]any, 0)
 
-	for key := range cons.SOUND {
+	for _, val := range cons.SOUND_DATAS {
 		datas = append(datas, map[string]any{
-			"name": key,
-			"url":  baseUrl + "/" + key,
+			"name":  val.Title,
+			"url":   baseUrl + "/sound/" + val.Title,
+			"image": baseUrl + "/sound/thumbnail/" + val.Title,
 		})
 	}
 
@@ -127,4 +128,13 @@ func (ctr *AssetControllerImpl) GetPdf(c *gin.Context) {
 		})
 	}()
 	c.File(file)
+}
+
+func (ctr *AssetControllerImpl) GetSoundImage(c *gin.Context) {
+	image, err := h.FindOneSoundImage(c.Param("title"))
+	if err != nil {
+		ctr.AbortResponse(c, err)
+		return
+	}
+	c.File(image)
 }

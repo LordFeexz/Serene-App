@@ -13,6 +13,7 @@ func (r *router) assetRoute(rg *gin.RouterGroup, asset controllers.AssetControll
 		GET("/emote/:name", asset.GetEmoteByName).
 		Use(md.Authentication).
 		GET("/therapy-video", asset.GetAllTherapyVideo).
+		GET("/sound/thumbnail/:title", asset.GetSoundImage).
 		GET("/therapy-video/:v", asset.GetOneTheraphyVideo).
 		GET("/sound", asset.GetAllSound).
 		GET("/sound/:title", asset.GetOneSound).

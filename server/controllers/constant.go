@@ -74,6 +74,7 @@ type AssetController interface {
 	GetOneSound(c *gin.Context)
 	GetAllEmote(c *gin.Context)
 	GetPdf(c *gin.Context)
+	GetSoundImage(c *gin.Context)
 }
 
 type AssetControllerImpl struct {

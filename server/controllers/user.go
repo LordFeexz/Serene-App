@@ -70,6 +70,7 @@ func (ctr *UserControllerImpl) Register(c *gin.Context) {
 	}
 
 	go ctr.userService.SendEmailVerification(data)
+	data.Password = ""
 
 	ctr.WriteResponse(c, 201, "success", data)
 }
@@ -170,7 +171,7 @@ func (ctr *UserControllerImpl) Verify(c *gin.Context) {
 	if err := ctr.userRepo.GetDb().QueryRowContext(
 		c.Request.Context(),
 		h.LogQuery(
-			fmt.Sprintf(`SELECT id, email, is_verified, updated_at FROM %s WHERE id = $1`, user.TABLE_NAME),
+			fmt.Sprintf(`SELECT id, email, is_verified, updated_at FROM "%s" WHERE id = $1`, user.TABLE_NAME),
 		),
 		claims["id"],
 	).Scan(
