@@ -11,9 +11,7 @@ import (
 
 type sender struct{ *gomail.Dialer }
 
-type Mailer interface {
-	Send(*gomail.Message) error
-}
+type Mailer interface{ Send(*gomail.Message) error }
 
 func NewSender() Mailer {
 	return &sender{gomail.NewDialer(
@@ -24,9 +22,7 @@ func NewSender() Mailer {
 	)}
 }
 
-func (s *sender) Send(msg *gomail.Message) error {
-	return s.DialAndSend(msg)
-}
+func (s *sender) Send(msg *gomail.Message) error { return s.DialAndSend(msg) }
 
 func NewMessage(sub, html string, to []string) *gomail.Message {
 	mailer := gomail.NewMessage()

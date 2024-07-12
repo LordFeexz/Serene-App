@@ -1,10 +1,6 @@
 package constants
 
-type SoundAsset struct {
-	Title string `json:"title"`
-	Sound string `json:"sound"`
-	Image string `json:"image"`
-}
+type SoundAsset struct{ Title, Sound, Image string }
 
 var (
 	SOUND_DATAS = []SoundAsset{
