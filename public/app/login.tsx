@@ -1,7 +1,6 @@
 import CustomKeyboard from "@/components/CustomKeyboard";
 import Footer from "@/components/Footer";
 import LinkButton from "@/components/LinkButton";
-import SuccessAlert from "@/components/SuccessAlert";
 import VerificationButton from "@/components/VerificationButton";
 import { loginRest, verifToken } from "@/services/fetchService";
 import { getItem, setItem } from "@/services/secureStore";

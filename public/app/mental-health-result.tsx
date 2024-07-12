@@ -76,12 +76,25 @@ export default function mentalHealthResult() {
               height: smallCircleWidth,
             }}
           >
-            <Text style={{ fontSize: 40, color: "#1A4789" }}>{score}</Text>
+            <Image source={require("@/assets/images/gif.gif")} />
+
+            <Text
+              style={{
+                fontSize: 40,
+                color: "#1A4789",
+                zIndex: 1,
+                paddingTop: -50,
+                position: "absolute",
+              }}
+            >
+              {score}
+            </Text>
           </View>
         </View>
         <Text style={{ fontSize: 16, textAlign: "center", color: "#1A4789" }}>
           {message}
         </Text>
+
         <View
           style={{
             width: width * 0.5,
