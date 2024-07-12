@@ -31,6 +31,22 @@ export const postResendEmail = async (email: string) => {
     throw error;
   }
 };
+export const verifToken = async (token: string) => {
+  try {
+    const { data } = await axiosInstance({
+      url: axiosInstance.getUri() + "/user/verify",
+      method: "POST",
+      data: { token },
+    });
+    return data;
+  } catch (error) {
+    if (error && error instanceof AxiosError) {
+      console.log(error?.response?.data);
+      throw error.response?.data;
+    }
+    throw error;
+  }
+};
 
 export const loginRest = async (payload: {
   email: string;
