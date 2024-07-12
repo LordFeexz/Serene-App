@@ -35,8 +35,7 @@ export default function ebook() {
     if (Platform.OS == "android") {
       const dir = ensureDirAsync(downloadPath);
     }
-    let fileName = fileUrl.split("Reports/")[1];
-    //alert(fileName)
+    let fileName = "pdf.pdf";
     const downloadResumable = FileSystem.createDownloadResumable(
       fileUrl,
       downloadPath + fileName,
@@ -154,7 +153,7 @@ export default function ebook() {
           <CustomButton
             onPress={async () =>
               downloadFile(
-                "https://storage.googleapis.com/tipsy-bucket/Reports/PSYCHOLOGICAL-HEALTH-AND-SELF-HEALTH.pdf"
+                "https://de47-36-77-146-113.ngrok-free.app/api/v1/assets/pdf"
               )
             }
             text="DOWNLOAD E-BOOK"

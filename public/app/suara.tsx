@@ -7,49 +7,36 @@ import Logo from "@/components/Logo";
 import { useEffect, useState } from "react";
 import { Dimensions, Image, Text, TouchableOpacity, View } from "react-native";
 import { Audio } from "expo-av";
+import { getSounds } from "@/services/fetchService";
+import Loading from "@/components/Loading";
 
 export default function suara() {
   const [sound, setSound] = useState<Audio.Sound>();
   const { width, height } = Dimensions.get("screen");
+  const [assets, setAssets] = useState<
+    { imageSource: string; soundsUri: string }[]
+  >([]);
+  const [loading, setLoading] = useState(true);
 
-  const sounds = [
-    {
-      imageSource: require("@/assets/images/atap.png"),
-      soundsUri: "https://samplelib.com/lib/preview/mp3/sample-12s.mp3",
-    },
-    {
-      imageSource: require("@/assets/images/aer.png"),
-      soundsUri: "https://samplelib.com/lib/preview/mp3/sample-12s.mp3",
-    },
-    {
-      imageSource: require("@/assets/images/daon.png"),
-      soundsUri: "https://samplelib.com/lib/preview/mp3/sample-12s.mp3",
-    },
-    {
-      imageSource: require("@/assets/images/deres.png"),
-      soundsUri: "https://samplelib.com/lib/preview/mp3/sample-12s.mp3",
-    },
-    {
-      imageSource: require("@/assets/images/gerimis.png"),
-      soundsUri: "https://samplelib.com/lib/preview/mp3/sample-12s.mp3",
-    },
-    {
-      imageSource: require("@/assets/images/jendela.png"),
-      soundsUri: "https://samplelib.com/lib/preview/mp3/sample-12s.mp3",
-    },
-    {
-      imageSource: require("@/assets/images/ombak.png"),
-      soundsUri: "https://samplelib.com/lib/preview/mp3/sample-12s.mp3",
-    },
-    {
-      imageSource: require("@/assets/images/payung.png"),
-      soundsUri: "https://samplelib.com/lib/preview/mp3/sample-12s.mp3",
-    },
-    {
-      imageSource: require("@/assets/images/petir.png"),
-      soundsUri: "https://samplelib.com/lib/preview/mp3/sample-12s.mp3",
-    },
-  ];
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await getSounds();
+        const dataSounds = data.map((el: { image: string; url: string }) => {
+          return {
+            imageSource: el.image,
+            soundsUri: el.url,
+          };
+        });
+        setAssets(dataSounds);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
   useEffect(() => {
     return sound
       ? () => {
@@ -74,6 +61,7 @@ export default function suara() {
     }
   };
 
+  if (loading) return <Loading />;
   return (
     <Container>
       <ContainerLogo>
@@ -203,14 +191,14 @@ export default function suara() {
               flexDirection: "row",
             }}
           >
-            {sounds.map((item, index) => (
+            {assets.map((item, index) => (
               <TouchableOpacity
                 key={index}
                 style={{ width: 0.3 * width, padding: 30 }}
                 onPress={() => playSound(item.soundsUri)}
               >
                 <Image
-                  source={item.imageSource}
+                  source={{ uri: item.imageSource }}
                   style={{ height: height * 0.04, width: width * 0.12 }}
                 />
               </TouchableOpacity>

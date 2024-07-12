@@ -37,7 +37,7 @@ export default function Login() {
   const paddingBottom = m * height + c;
   const [disableForm, setDisableForm] = useState(false);
   const route = useRoute();
-  const { token } = route.params as any;
+  const { result } = route.params as any;
 
   useEffect(() => {
     (async () => {
@@ -47,14 +47,7 @@ export default function Login() {
           return router.replace("/");
         }
 
-        if (token) {
-          try {
-            const { data } = await verifToken(token);
-            if (data) Toast("Verifikasi berhasil!", "success");
-          } catch (error) {
-            Toast("Invalid Token", "danger");
-          }
-        }
+        if (result) Toast("Verifikasi berhasil!", "success");
       } catch (error) {
         console.log(error);
       }

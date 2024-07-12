@@ -15,6 +15,21 @@ export const getMood = async () => {
     console.log(error, "<~");
   }
 };
+
+export const getSounds = async () => {
+  try {
+    const { data } = await axiosInstance({
+      url: axiosInstance.getUri() + "/assets/sound",
+    });
+    return data;
+  } catch (error) {
+    if (error && error instanceof AxiosError) {
+      console.log(error?.response?.data);
+      throw error.response?.data;
+    }
+    console.log(error, "<~");
+  }
+};
 export const postResendEmail = async (email: string) => {
   try {
     const { data } = await axiosInstance({
