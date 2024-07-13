@@ -47,13 +47,14 @@ export default function ebook() {
       fileUrl,
       downloadPath + fileName,
       {
-        // headers,
+        headers,
       },
       downloadCallback
     );
 
     try {
       const downloadResult = await downloadResumable.downloadAsync();
+      console.log(downloadResult);
       if (Platform.OS == "android")
         saveAndroidFile(downloadResult?.uri as string, fileName);
     } catch (e) {

@@ -33,8 +33,8 @@ export default function video() {
       console.log(data);
     })();
   }, []);
-  const handleRoute = (vidId: string, title: string) => {
-    getOneVid(title);
+  const handleRoute = (vidId: string) => {
+    getOneVid(vidId);
     router.replace({ pathname: "video-player", params: { vidId: vidId } });
   };
   return (
@@ -177,7 +177,7 @@ export default function video() {
                   alignItems: "center",
                   borderRadius: 10,
                 }}
-                onPress={() => handleRoute(item.videoId, item.title)}
+                onPress={() => handleRoute(item.videoId)}
                 text={item.title}
                 textStyle={{
                   color: "#1A4789",

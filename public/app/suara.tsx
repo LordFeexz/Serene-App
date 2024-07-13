@@ -22,7 +22,6 @@ export default function suara() {
     (async () => {
       try {
         const { data } = await getSounds();
-        console.log(data);
         const dataSounds = data.map(
           (el: { image: string; url: string; name: string }) => {
             return {

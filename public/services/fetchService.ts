@@ -18,7 +18,7 @@ export const getMood = async () => {
 export const getOneSound = async (title: string) => {
   try {
     const { data } = await axiosInstance({
-      url: axiosInstance.getUri() + "/assets/sound/" + title,
+      url: axiosInstance.getUri() + "/assets/sound/thumbnail/" + title,
     });
     return data;
   } catch (error) {
