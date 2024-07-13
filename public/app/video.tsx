@@ -5,7 +5,7 @@ import ContainerLogo from "@/components/ContainerLogo";
 import CustomButton from "@/components/CustomButton";
 import FooterWithMenu from "@/components/FooterWithMenu";
 import Logo from "@/components/Logo";
-import { getAllVideo } from "@/services/fetchService";
+import { getAllVideo, getOneVid } from "@/services/fetchService";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Dimensions, Image, Text, View } from "react-native";
@@ -33,7 +33,8 @@ export default function video() {
       console.log(data);
     })();
   }, []);
-  const handleRoute = (vidId: string) => {
+  const handleRoute = (vidId: string, title: string) => {
+    getOneVid(title);
     router.replace({ pathname: "video-player", params: { vidId: vidId } });
   };
   return (
@@ -176,7 +177,7 @@ export default function video() {
                   alignItems: "center",
                   borderRadius: 10,
                 }}
-                onPress={() => handleRoute(item.videoId)}
+                onPress={() => handleRoute(item.videoId, item.title)}
                 text={item.title}
                 textStyle={{
                   color: "#1A4789",

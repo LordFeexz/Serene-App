@@ -49,7 +49,9 @@ export default function actiivity() {
     };
 
     const inputDate = moment
-      .tz(date, "YYYY-MM-DD HH:mm:ss", "Etc/GMT-7")
+      .tz(date, "YYYY-MM-DD HH:mm:ss", "Etc/GMT-0")
+      .clone()
+      .tz("Etc/GMT-7")
       .toDate();
     return new Date(inputDate).toLocaleDateString("id-ID", timeFormat);
   };

@@ -5,6 +5,8 @@ import ContainerLogo from "@/components/ContainerLogo";
 import CustomButton from "@/components/CustomButton";
 import FooterWithMenu from "@/components/FooterWithMenu";
 import Logo from "@/components/Logo";
+import { getItem } from "@/services/secureStore";
+import { Toast } from "@/services/toasts";
 import * as FileSystem from "expo-file-system";
 import { useState } from "react";
 import { Dimensions, Image, Platform, Text, View } from "react-native";
@@ -36,10 +38,17 @@ export default function ebook() {
       const dir = ensureDirAsync(downloadPath);
     }
     let fileName = "pdf.pdf";
+    const headers = {
+      Authorization: (await getItem("access_token")) as string,
+    };
+
+    console.log(fileUrl, downloadPath, headers);
     const downloadResumable = FileSystem.createDownloadResumable(
       fileUrl,
       downloadPath + fileName,
-      {},
+      {
+        // headers,
+      },
       downloadCallback
     );
 
@@ -73,7 +82,7 @@ export default function ebook() {
             await FileSystem.writeAsStringAsync(uri, fileString, {
               encoding: FileSystem.EncodingType.Base64,
             });
-            alert("Report Downloaded Successfully");
+            Toast("File Downloaded", "success");
           })
           .catch((e) => {});
       } catch (e) {
@@ -152,9 +161,7 @@ export default function ebook() {
           />
           <CustomButton
             onPress={async () =>
-              downloadFile(
-                "https://de47-36-77-146-113.ngrok-free.app/api/v1/assets/pdf"
-              )
+              downloadFile("https://serene-app.onrender.com/api/v1/assets/pdf")
             }
             text="DOWNLOAD E-BOOK"
             textStyle={{

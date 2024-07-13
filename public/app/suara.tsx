@@ -7,14 +7,14 @@ import Logo from "@/components/Logo";
 import { useEffect, useState } from "react";
 import { Dimensions, Image, Text, TouchableOpacity, View } from "react-native";
 import { Audio } from "expo-av";
-import { getSounds } from "@/services/fetchService";
+import { getOneSound, getSounds } from "@/services/fetchService";
 import Loading from "@/components/Loading";
 
 export default function suara() {
   const [sound, setSound] = useState<Audio.Sound>();
   const { width, height } = Dimensions.get("screen");
   const [assets, setAssets] = useState<
-    { imageSource: string; soundsUri: string }[]
+    { imageSource: string; soundsUri: string; title: string }[]
   >([]);
   const [loading, setLoading] = useState(true);
 
@@ -22,12 +22,16 @@ export default function suara() {
     (async () => {
       try {
         const { data } = await getSounds();
-        const dataSounds = data.map((el: { image: string; url: string }) => {
-          return {
-            imageSource: el.image,
-            soundsUri: el.url,
-          };
-        });
+        console.log(data);
+        const dataSounds = data.map(
+          (el: { image: string; url: string; name: string }) => {
+            return {
+              imageSource: el.image,
+              soundsUri: el.url,
+              title: el.name,
+            };
+          }
+        );
         setAssets(dataSounds);
       } catch (error) {
         console.log(error);
@@ -46,7 +50,7 @@ export default function suara() {
       : undefined;
   }, [sound]);
 
-  const playSound = async (soundsUri: string) => {
+  const playSound = async (soundsUri: string, title: string) => {
     try {
       const { sound, status } = await Audio.Sound.createAsync({
         uri: soundsUri,
@@ -55,6 +59,7 @@ export default function suara() {
 
       await sound.getStatusAsync();
       await sound.playAsync();
+      getOneSound(title);
       console.log("Playing Sound", status);
     } catch (err) {
       console.log(err, "the err - bad url e.g.");
@@ -195,7 +200,7 @@ export default function suara() {
               <TouchableOpacity
                 key={index}
                 style={{ width: 0.3 * width, padding: 30 }}
-                onPress={() => playSound(item.soundsUri)}
+                onPress={() => playSound(item.soundsUri, item.title)}
               >
                 <Image
                   source={{ uri: item.imageSource }}
