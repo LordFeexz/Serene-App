@@ -22,6 +22,7 @@ import {
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import { useRoute } from "@react-navigation/native";
+import Loading from "@/components/Loading";
 
 export default function Login() {
   const [username, onChangeUsername] = useState("");
@@ -54,32 +55,29 @@ export default function Login() {
     })();
   }, []);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     try {
       setDisableForm(true);
-      loginRest({ email: username, password })
-        .then(async (data) => {
-          console.log(data.code);
-          if (data.code == 401) throw { data: { message: data.message } };
-          await setItem("access_token", data.data);
-          Toast("Login Success", "success");
-          return router.replace("/");
-        })
-        .catch((e) => {
-          let message = e.data
-            ? Object.keys(e.data).map((key) => e.data[key])[0]
-            : e.message;
-          if (message == "akun mu belum di verifikasi") {
-            setNotVerified(true);
-          }
-          Toast(message, "danger");
-        });
+
+      const loginData = await loginRest({ email: username, password });
+      await setItem("access_token", loginData.data);
+      Toast("Login Success", "success");
+      return router.replace("/");
     } catch (error) {
+      const e = error as any;
+      let message = e.data
+        ? Object.keys(e.data).map((key) => e.data[key])[0]
+        : e.message;
+      if (message == "akun mu belum di verifikasi") {
+        setNotVerified(true);
+      }
+      Toast(message, "danger");
       console.log(error);
     } finally {
       setDisableForm(false);
     }
   };
+  // if (disableForm) return <Loading />;
   return (
     <KeyboardAwareScrollView
       style={{ flexGrow: 1 }}
@@ -133,7 +131,13 @@ export default function Login() {
           </CustomKeyboard>
           <View style={styles.signInContainer}>
             <Pressable onPress={handleLogin} disabled={disableForm}>
-              <Text style={styles.signInText}>Sign in</Text>
+              {disableForm ? (
+                <View style={{ height: 25 }}>
+                  <Loading />
+                </View>
+              ) : (
+                <Text style={styles.signInText}>Sign in</Text>
+              )}
             </Pressable>
           </View>
 

@@ -33,9 +33,12 @@ export default function video() {
       console.log(data);
     })();
   }, []);
-  const handleRoute = (vidId: string) => {
-    getOneVid(vidId);
-    router.replace({ pathname: "video-player", params: { vidId: vidId } });
+  const handleRoute = async (vidId: string) => {
+    await getOneVid(vidId);
+    return router.replace({
+      pathname: "video-player",
+      params: { vidId: vidId },
+    });
   };
   return (
     <Container>

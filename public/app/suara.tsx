@@ -9,9 +9,11 @@ import { Dimensions, Image, Text, TouchableOpacity, View } from "react-native";
 import { Audio } from "expo-av";
 import { getOneSound, getSounds } from "@/services/fetchService";
 import Loading from "@/components/Loading";
+import { getItem } from "@/services/secureStore";
 
 export default function suara() {
   const [sound, setSound] = useState<Audio.Sound>();
+  const [token, setToken] = useState("");
   const { width, height } = Dimensions.get("screen");
   const [assets, setAssets] = useState<
     { imageSource: string; soundsUri: string; title: string }[]
@@ -22,6 +24,8 @@ export default function suara() {
     (async () => {
       try {
         const { data } = await getSounds();
+        const token = await getItem("access_token");
+        setToken(token as string);
         const dataSounds = data.map(
           (el: { image: string; url: string; name: string }) => {
             return {
@@ -51,8 +55,12 @@ export default function suara() {
 
   const playSound = async (soundsUri: string, title: string) => {
     try {
+      // setLoading(true);
       const { sound, status } = await Audio.Sound.createAsync({
         uri: soundsUri,
+        headers: {
+          Authorization: (await getItem("access_token")) as string,
+        },
       });
       setSound(sound);
 
@@ -62,6 +70,8 @@ export default function suara() {
       console.log("Playing Sound", status);
     } catch (err) {
       console.log(err, "the err - bad url e.g.");
+    } finally {
+      // setLoading(false);
     }
   };
 
@@ -202,7 +212,12 @@ export default function suara() {
                 onPress={() => playSound(item.soundsUri, item.title)}
               >
                 <Image
-                  source={{ uri: item.imageSource }}
+                  source={{
+                    uri: item.imageSource,
+                    headers: {
+                      Authorization: token,
+                    },
+                  }}
                   style={{ height: height * 0.04, width: width * 0.12 }}
                 />
               </TouchableOpacity>

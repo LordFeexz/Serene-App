@@ -172,82 +172,88 @@ export default function Rujukan() {
           </Text>
         </View>
         <ScrollView>
-          {clinicData.map((clinic, index) => (
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                marginTop: 10,
-                gap: 5,
-                backgroundColor: "#B8E1F1",
-                borderRadius: 10,
-                padding: 5,
-              }}
-              key={index}
-            >
+          {!clinicData.length && (
+            <Text>Tidak ada klinik terdekat yang tersedia</Text>
+          )}
+          {!!clinicData.length &&
+            clinicData.map((clinic, index) => (
               <View
                 style={{
                   flexDirection: "row",
-                  alignItems: "center",
                   justifyContent: "space-between",
-                  flex: 0.7,
-                }}
-              >
-                <ClinicIcon />
-              </View>
-              <View
-                style={{
-                  marginLeft: 5,
-                  flex: 2,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Text
-                  style={{
-                    fontWeight: "bold",
-                    textAlign: "center",
-                    fontSize: height * 0.017,
-                  }}
-                >
-                  {clinic.name}
-                </Text>
-                <Text style={{ textAlign: "center", fontSize: height * 0.015 }}>
-                  {clinic.vicinity}
-                </Text>
-              </View>
-              <View
-                style={{
-                  flex: 0.5,
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  height: "auto",
+                  marginTop: 10,
+                  gap: 5,
+                  backgroundColor: "#B8E1F1",
+                  borderRadius: 10,
                   padding: 5,
                 }}
+                key={index}
               >
-                <Text>{clinic.distance}</Text>
-                <CustomButton
-                  text="Pilih"
-                  onPress={() =>
-                    openGMaps(
-                      clinic.geometry.location.lat,
-                      clinic.geometry.location.lng,
-                      clinic.name
-                    )
-                  }
-                  containerStyle={{
-                    backgroundColor: "#1A4789",
-                    padding: 5,
-                    borderRadius: 10,
-                    width: 50,
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    flex: 0.7,
+                  }}
+                >
+                  <ClinicIcon />
+                </View>
+                <View
+                  style={{
+                    marginLeft: 5,
+                    flex: 2,
                     justifyContent: "center",
                     alignItems: "center",
                   }}
-                  textStyle={{ color: "white" }}
-                />
+                >
+                  <Text
+                    style={{
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      fontSize: height * 0.017,
+                    }}
+                  >
+                    {clinic.name}
+                  </Text>
+                  <Text
+                    style={{ textAlign: "center", fontSize: height * 0.015 }}
+                  >
+                    {clinic.vicinity}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    flex: 0.5,
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    height: "auto",
+                    padding: 5,
+                  }}
+                >
+                  <Text>{clinic.distance}</Text>
+                  <CustomButton
+                    text="Pilih"
+                    onPress={() =>
+                      openGMaps(
+                        clinic.geometry.location.lat,
+                        clinic.geometry.location.lng,
+                        clinic.name
+                      )
+                    }
+                    containerStyle={{
+                      backgroundColor: "#1A4789",
+                      padding: 5,
+                      borderRadius: 10,
+                      width: 50,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                    textStyle={{ color: "white" }}
+                  />
+                </View>
               </View>
-            </View>
-          ))}
+            ))}
         </ScrollView>
       </ContainerBody>
       <FooterWithMenu />

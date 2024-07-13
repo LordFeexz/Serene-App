@@ -4,9 +4,11 @@ import ContainerHead from "@/components/ContainerHead";
 import ContainerLogo from "@/components/ContainerLogo";
 import CustomButton from "@/components/CustomButton";
 import FooterWithMenu from "@/components/FooterWithMenu";
+import Loading from "@/components/Loading";
 import Logo from "@/components/Logo";
 import Question from "@/components/Question";
 import { getMentalHealth, postMentalHealth } from "@/services/fetchService";
+import { Toast } from "@/services/Toast";
 import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
@@ -19,7 +21,7 @@ type Questions = {
 export default function mentalHealth() {
   const [questions, setQuestions] = useState<Questions[]>([]);
   const router = useRouter();
-  const [disableForm, setDisableForm] = useState(false);
+  const [disableForm, setDisableForm] = useState(true);
 
   const { height } = Dimensions.get("window");
   const handleSetQuestions = (answer: boolean, index: number) => {
@@ -32,26 +34,40 @@ export default function mentalHealth() {
 
   useEffect(() => {
     (async () => {
-      const menatalHealthQuestion = await getMentalHealth();
-      const questions = menatalHealthQuestion.data.map((el: string) => ({
-        question: el,
-        answer: false,
-      }));
-      setQuestions(questions);
+      try {
+        const menatalHealthQuestion = await getMentalHealth();
+        const questions = menatalHealthQuestion.data.map((el: string) => ({
+          question: el,
+          answer: false,
+        }));
+        setQuestions(questions);
+      } catch (error) {
+        Toast("Internal Server Error", "danger");
+      } finally {
+        setDisableForm(false);
+      }
     })();
   }, []);
   const handleSubmit = async () => {
-    setDisableForm(true);
-    const resultMentalHealth = await postMentalHealth(questions);
-    setDisableForm(false);
-    router.replace({
-      pathname: "/mental-health-result",
-      params: {
-        score: resultMentalHealth.data.result,
-        message: resultMentalHealth.message,
-      },
-    });
+    try {
+      setDisableForm(true);
+      const resultMentalHealth = await postMentalHealth(questions);
+      setDisableForm(false);
+      router.replace({
+        pathname: "/mental-health-result",
+        params: {
+          score: resultMentalHealth.data.result,
+          message: resultMentalHealth.message,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setDisableForm(false);
+    }
   };
+
+  if (disableForm) return <Loading />;
   return (
     <Container>
       <ContainerLogo>
