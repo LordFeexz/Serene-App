@@ -86,6 +86,17 @@ func (ctr *AssetControllerImpl) GetAllSound(c *gin.Context) {
 		})
 	}
 
+	go func() {
+		now := time.Now()
+		ctr.historyRepo.Create(context.Background(), &history.History{
+			FeatureUsed: history.GET_SOUND_THERAPY,
+			Description: fmt.Sprintf("membuka audio pada %d-%02d-%02d pukul %02d:%02d", now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute()),
+			UserId:      ctr.userService.GetUserFromRequestCtx(c).Id,
+			CreatedAt:   now,
+			UpdatedAt:   now,
+		})
+	}()
+
 	ctr.WriteResponse(c, 200, "OK", datas)
 }
 
