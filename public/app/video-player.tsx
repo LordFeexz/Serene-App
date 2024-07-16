@@ -3,15 +3,35 @@ import ContainerBody from "@/components/ContainerBody";
 import ContainerHead from "@/components/ContainerHead";
 import ContainerLogo from "@/components/ContainerLogo";
 import FooterWithMenu from "@/components/FooterWithMenu";
+import Loading from "@/components/Loading";
 import Logo from "@/components/Logo";
+import { getOneVid } from "@/services/fetchService";
 import { useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
 import { Dimensions, Image, Text, View } from "react-native";
 import YoutubePlayer from "react-native-youtube-iframe";
 
 export default function videoplayer() {
-  const { width, height } = Dimensions.get("window");
+  const { width } = Dimensions.get("window");
   const { vidId } = useLocalSearchParams();
-
+  const [isReadyForRender, setIsReadyForRender] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    (async () => {
+      try {
+        await getOneVid(vidId as string);
+      } catch (error) {
+        console.log(error, "<~ error");
+      } finally {
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1500);
+      }
+    })();
+  }, []);
+  const onReady = () => {
+    setIsReadyForRender(true);
+  };
   return (
     <Container>
       <ContainerLogo>
@@ -71,7 +91,24 @@ export default function videoplayer() {
         </View>
       </ContainerHead>
       <ContainerBody style={{ padding: 10, marginTop: 10 }}>
-        <YoutubePlayer height={300} play={true} videoId={vidId as string} />
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <YoutubePlayer
+            height={300}
+            play={true}
+            videoId={vidId as string}
+            onReady={onReady}
+            webViewStyle={{
+              opacity: 0.99,
+              display: isReadyForRender ? "flex" : "none",
+            }}
+            webViewProps={{
+              androidLayerType: isReadyForRender ? "hardware" : "software",
+              renderToHardwareTextureAndroid: true,
+            }}
+          />
+        )}
       </ContainerBody>
       <FooterWithMenu />
     </Container>

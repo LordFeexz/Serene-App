@@ -108,7 +108,7 @@ export default function Rujukan() {
       ios: "maps:" + lat + "," + lng + "?q=" + label,
       android: "geo:" + lat + "," + lng + "?q=" + label,
     });
-
+    console.log(url);
     Linking.canOpenURL(url as string).then((supported) => {
       if (supported) {
         return Linking.openURL(url as string);
