@@ -55,7 +55,7 @@ export default function suara() {
 
   const playSound = async (soundsUri: string, title: string) => {
     try {
-      // setLoading(true);
+      setLoading(true);
       const { sound, status } = await Audio.Sound.createAsync({
         uri: soundsUri,
         headers: {
@@ -71,11 +71,11 @@ export default function suara() {
     } catch (err) {
       console.log(err, "the err - bad url e.g.");
     } finally {
-      // setLoading(false);
+      setLoading(false);
     }
   };
 
-  if (loading) return <Loading />;
+  // if (loading) return <Loading />;
   return (
     <Container>
       <ContainerLogo>
@@ -197,7 +197,7 @@ export default function suara() {
           </View>
           <View
             style={{
-              justifyContent: "space-around",
+              justifyContent: loading ? "center" : "space-around",
               flex: 4,
               backgroundColor: "#B8E1F1",
               width: "100%",
@@ -208,7 +208,11 @@ export default function suara() {
             {assets.map((item, index) => (
               <TouchableOpacity
                 key={index}
-                style={{ width: 0.3 * width, padding: 30 }}
+                style={{
+                  width: 0.3 * width,
+                  padding: 30,
+                  opacity: loading ? 0.5 : 1,
+                }}
                 onPress={() => playSound(item.soundsUri, item.title)}
               >
                 <Image
@@ -222,6 +226,21 @@ export default function suara() {
                 />
               </TouchableOpacity>
             ))}
+            {loading && (
+              <View
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Loading />
+              </View>
+            )}
           </View>
         </View>
       </ContainerBody>

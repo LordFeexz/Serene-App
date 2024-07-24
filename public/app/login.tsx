@@ -72,7 +72,7 @@ export default function Login() {
         setNotVerified(true);
       }
       Toast(message, "danger");
-      console.log(error);
+      console.log(message, "<~ message");
     } finally {
       setDisableForm(false);
     }

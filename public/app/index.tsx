@@ -43,10 +43,10 @@ export default function Index() {
     {
       component: (
         <Image
-          source={require("@/assets/images/mental-health.png")}
+          source={require("@/assets/images/new-icon/new-mentalhealth.png")}
           style={{
-            height: (((1 / 7) * 85) / 100) * height,
-            width: 0.25 * width,
+            height: height > 700 ? (((1 / 3) * 80) / 100) * height : height / 3,
+            width: 0.37 * width,
             objectFit: "contain",
           }}
         />
@@ -56,11 +56,10 @@ export default function Index() {
     {
       component: (
         <Image
-          source={require("@/assets/images/mood-test.png")}
+          source={require("@/assets/images/new-icon/new-moodtest.png")}
           style={{
-            height:
-              height > 700 ? (((1 / 7) * 80) / 100) * height : height / 7.6,
-            width: 0.22 * width,
+            height: height > 700 ? (((1 / 4) * 80) / 100) * height : height / 4,
+            width: 0.35 * width,
             objectFit: "contain",
           }}
         />
@@ -70,10 +69,10 @@ export default function Index() {
     {
       component: (
         <Image
-          source={require("@/assets/images/activity.png")}
+          source={require("@/assets/images/new-icon/new-activity.png")}
           style={{
-            height: (((1 / 7) * 80) / 100) * height,
-            width: 0.2 * width,
+            height: (((1 / 4) * 80) / 100) * height,
+            width: 0.4 * width,
             objectFit: "contain",
           }}
         />

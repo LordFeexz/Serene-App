@@ -4,7 +4,7 @@
     "slug": "sereneApp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/logo-big.png",
+    "icon": "./assets/images/icon.jpeg",
     "scheme": "sereneapp",
     "userInterfaceStyle": "automatic",
     "splash": {
@@ -41,7 +41,12 @@
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
       ],
-      "expo-localization"
+      "expo-localization",
+      ["expo-build-properties", {
+        "android": {
+          "usesCleartextTraffic": true
+        }
+      }]
     ],
     "experiments": {
       "typedRoutes": true

@@ -2,7 +2,7 @@ import axios from "axios";
 import { getItem } from "./secureStore";
 
 const axiosInstance = axios.create({
-  baseURL: "https://serene-app.onrender.com/api/v1",
+  baseURL: "http://16.171.26.154:3001/api/v1",
 });
 
 axiosInstance.interceptors.request.use(async (config) => {
