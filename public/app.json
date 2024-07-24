@@ -4,7 +4,7 @@
     "slug": "sereneApp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.jpeg",
+    "icon": "./assets/images/icon.png",
     "scheme": "sereneapp",
     "userInterfaceStyle": "automatic",
     "splash": {
@@ -18,8 +18,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/serene.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/icon.png",
       },
       "permissions": [
         "android.permission.ACCESS_COARSE_LOCATION",
