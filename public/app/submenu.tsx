@@ -26,13 +26,6 @@ export default function Submenu() {
   }, []);
   const buttons = [
     {
-      text: "Account",
-      onPress: () => {
-        console.log("Account");
-      },
-      href: "/",
-    },
-    {
       text: "My Activity",
       href: "/activity",
     },

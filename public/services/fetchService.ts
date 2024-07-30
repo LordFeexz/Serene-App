@@ -15,7 +15,27 @@ export const getMood = async () => {
     console.log(error, "<~");
   }
 };
+export const getOneSound = async (title: string) => {
+  try {
+    const { data } = await axiosInstance({
+      url: axiosInstance.getUri() + "/assets/sound/thumbnail/" + title,
+    });
+    return data;
+  } catch (error) {
+    return error;
+  }
+};
 
+export const getOneVid = async (title: string) => {
+  try {
+    const { data } = await axiosInstance({
+      url: axiosInstance.getUri() + "/assets/therapy-video/" + title,
+    });
+    return data;
+  } catch (error) {
+    return error;
+  }
+};
 export const getSounds = async () => {
   try {
     const { data } = await axiosInstance({

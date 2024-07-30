@@ -4,6 +4,7 @@ import ContainerHead from "@/components/ContainerHead";
 import ContainerLogo from "@/components/ContainerLogo";
 import CustomButton from "@/components/CustomButton";
 import FooterWithMenu from "@/components/FooterWithMenu";
+import Loading from "@/components/Loading";
 import Logo from "@/components/Logo";
 import { getAllVideo } from "@/services/fetchService";
 import { useRouter } from "expo-router";
@@ -22,20 +23,30 @@ export default function video() {
   const [therapyVideos, setTherapyVideos] = useState<Therapies[]>([]);
   const { width, height } = Dimensions.get("window");
 
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     (async () => {
-      const { data } = (await getAllVideo()) as TherapiesData;
-      const therapiesVideos = data.map((el) => {
-        return { title: el.title, videoId: el.v };
-      });
+      try {
+        const { data } = (await getAllVideo()) as TherapiesData;
+        const therapiesVideos = data.map((el) => {
+          return { title: el.title, videoId: el.v };
+        });
 
-      setTherapyVideos(therapiesVideos);
-      console.log(data);
+        setTherapyVideos(therapiesVideos);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
     })();
   }, []);
-  const handleRoute = (vidId: string) => {
-    router.replace({ pathname: "video-player", params: { vidId: vidId } });
+  const handleRoute = async (vidId: string) => {
+    router.replace({
+      pathname: "/video-player",
+      params: { vidId: vidId },
+    });
   };
+  if (isLoading) return <Loading />;
   return (
     <Container>
       <ContainerLogo>

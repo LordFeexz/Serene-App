@@ -16,6 +16,7 @@ import {
 } from "react-native";
 
 import moment from "moment-timezone";
+import Loading from "@/components/Loading";
 type Histories = {
   created_at: string;
   feature_used: string;
@@ -27,6 +28,7 @@ type DataHistory = {
 export default function actiivity() {
   const { width, height } = Dimensions.get("window");
   const [histories, setHistories] = useState<Histories[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
@@ -35,6 +37,8 @@ export default function actiivity() {
         setHistories(data);
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     })();
   }, []);
@@ -49,10 +53,14 @@ export default function actiivity() {
     };
 
     const inputDate = moment
-      .tz(date, "YYYY-MM-DD HH:mm:ss", "Etc/GMT-7")
+      .tz(date, "YYYY-MM-DD HH:mm:ss", "Etc/GMT-0")
+      .clone()
+      .tz("Etc/GMT-7")
       .toDate();
     return new Date(inputDate).toLocaleDateString("id-ID", timeFormat);
   };
+
+  if (loading) return <Loading />;
   return (
     <Container>
       <ContainerLogo>

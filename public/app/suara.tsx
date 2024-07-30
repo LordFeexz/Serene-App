@@ -7,14 +7,16 @@ import Logo from "@/components/Logo";
 import { useEffect, useState } from "react";
 import { Dimensions, Image, Text, TouchableOpacity, View } from "react-native";
 import { Audio } from "expo-av";
-import { getSounds } from "@/services/fetchService";
+import { getOneSound, getSounds } from "@/services/fetchService";
 import Loading from "@/components/Loading";
+import { getItem } from "@/services/secureStore";
 
 export default function suara() {
   const [sound, setSound] = useState<Audio.Sound>();
+  const [token, setToken] = useState("");
   const { width, height } = Dimensions.get("screen");
   const [assets, setAssets] = useState<
-    { imageSource: string; soundsUri: string }[]
+    { imageSource: string; soundsUri: string; title: string }[]
   >([]);
   const [loading, setLoading] = useState(true);
 
@@ -22,12 +24,17 @@ export default function suara() {
     (async () => {
       try {
         const { data } = await getSounds();
-        const dataSounds = data.map((el: { image: string; url: string }) => {
-          return {
-            imageSource: el.image,
-            soundsUri: el.url,
-          };
-        });
+        const token = await getItem("access_token");
+        setToken(token as string);
+        const dataSounds = data.map(
+          (el: { image: string; url: string; name: string }) => {
+            return {
+              imageSource: el.image,
+              soundsUri: el.url,
+              title: el.name,
+            };
+          }
+        );
         setAssets(dataSounds);
       } catch (error) {
         console.log(error);
@@ -46,22 +53,29 @@ export default function suara() {
       : undefined;
   }, [sound]);
 
-  const playSound = async (soundsUri: string) => {
+  const playSound = async (soundsUri: string, title: string) => {
     try {
+      setLoading(true);
       const { sound, status } = await Audio.Sound.createAsync({
         uri: soundsUri,
+        headers: {
+          Authorization: (await getItem("access_token")) as string,
+        },
       });
       setSound(sound);
 
       await sound.getStatusAsync();
       await sound.playAsync();
+      getOneSound(title);
       console.log("Playing Sound", status);
     } catch (err) {
       console.log(err, "the err - bad url e.g.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (loading) return <Loading />;
+  // if (loading) return <Loading />;
   return (
     <Container>
       <ContainerLogo>
@@ -183,7 +197,7 @@ export default function suara() {
           </View>
           <View
             style={{
-              justifyContent: "space-around",
+              justifyContent: loading ? "center" : "space-around",
               flex: 4,
               backgroundColor: "#B8E1F1",
               width: "100%",
@@ -194,15 +208,39 @@ export default function suara() {
             {assets.map((item, index) => (
               <TouchableOpacity
                 key={index}
-                style={{ width: 0.3 * width, padding: 30 }}
-                onPress={() => playSound(item.soundsUri)}
+                style={{
+                  width: 0.3 * width,
+                  padding: 30,
+                  opacity: loading ? 0.5 : 1,
+                }}
+                onPress={() => playSound(item.soundsUri, item.title)}
               >
                 <Image
-                  source={{ uri: item.imageSource }}
+                  source={{
+                    uri: item.imageSource,
+                    headers: {
+                      Authorization: token,
+                    },
+                  }}
                   style={{ height: height * 0.04, width: width * 0.12 }}
                 />
               </TouchableOpacity>
             ))}
+            {loading && (
+              <View
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Loading />
+              </View>
+            )}
           </View>
         </View>
       </ContainerBody>

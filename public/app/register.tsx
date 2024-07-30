@@ -1,4 +1,5 @@
 import Footer from "@/components/Footer";
+import Loading from "@/components/Loading";
 import SuccessAlert from "@/components/SuccessAlert";
 import { registerRest } from "@/services/fetchService";
 import { Toast } from "@/services/toasts";
@@ -31,19 +32,15 @@ export default function register() {
   const m = (padding2 - padding1) / (breakpoint2 - breakpoint1);
   const c = padding1 - m * breakpoint1;
   const paddingBottom = m * height + c;
-  const handleRegister = () => {
+  const handleRegister = async () => {
     try {
       setDisableForm(true);
-      registerRest({ email, password, username })
-        .then(() => {
-          SuccessAlert("Register Success");
-          router.push("/login");
-        })
-        .catch((e) => {
-          Toast(Object.keys(e.data).map((key) => e.data[key])[0], "danger");
-        });
+      await registerRest({ email, password, username });
+      Toast("Register Success", "success");
+      router.push("/login");
     } catch (error) {
-      console.log(error);
+      const e = error as any;
+      Toast(Object.keys(e.data).map((key) => e.data[key])[0], "danger");
     } finally {
       setDisableForm(false);
     }
@@ -101,7 +98,13 @@ export default function register() {
           </View>
           <View style={styles.signInContainer}>
             <Pressable onPress={handleRegister} disabled={disableForm}>
-              <Text style={styles.signInText}>Sign Up</Text>
+              {disableForm ? (
+                <View style={{ height: 30 }}>
+                  <Loading />
+                </View>
+              ) : (
+                <Text style={styles.signInText}>Sign Up</Text>
+              )}
             </Pressable>
           </View>
         </View>

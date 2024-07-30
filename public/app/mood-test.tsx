@@ -5,7 +5,6 @@ import ContainerLogo from "@/components/ContainerLogo";
 import FooterWithMenu from "@/components/FooterWithMenu";
 import Loading from "@/components/Loading";
 import Logo from "@/components/Logo";
-import AlertComponent from "@/components/SuccessAlert";
 import { getMood, getTodaysMood, postMood } from "@/services/fetchService";
 import { Toast } from "@/services/toasts";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -91,6 +90,7 @@ export default function moodTest() {
   };
 
   if (loading) return <Loading />;
+  if (disableForm) return <Loading />;
   return (
     <Container>
       <ContainerLogo>
