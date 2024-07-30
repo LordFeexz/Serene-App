@@ -24,7 +24,7 @@ type DefaultPagination struct {
 
 type Answer struct {
 	Question   string `json:"question" form:"question" validate:"required"`
-	UserAnswer bool   `json:"answer" form:"answer"`
+	UserAnswer string `json:"answer" form:"answer" validate:"required,oneof='Tidak pernah' 'Jarang' 'Sesekali' 'Sering'"`
 }
 
 type MentalHealthAnswer struct {

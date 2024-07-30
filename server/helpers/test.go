@@ -15,11 +15,11 @@ func ValidMentalHealthQuestion(s string) bool {
 	return false
 }
 
-func GetMentalHealthResult(point uint8) string {
+func GetMentalHealthResult(point float32) string {
 	switch true {
-	case point <= 3:
+	case point <= 6:
 		return "Kesehatan Mental anda baik"
-	case point >= 4 && point <= 6:
+	case point >= 6 && point <= 12:
 		return "Kesehatan mental anda perlu diperhatikan, gunakan fitur terapi untuk membantu merelaksasi diri anda"
 	default:
 		return "Segera cari bantuan"
