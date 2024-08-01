@@ -20,7 +20,11 @@ func NewTestController(w web.ResponseWriter, v *validator.Validate, userService 
 }
 
 func (ctr *TestControllerImpl) GetMentalHealthQuestion(c *gin.Context) {
-	ctr.WriteResponse(c, 200, "OK", cons.MENTAL_HEALTH_QUESTIONS)
+	var questions []string
+	for _, val := range cons.MENTAL_HEALTH_QUESTIONS {
+		questions = append(questions, val.Question)
+	}
+	ctr.WriteResponse(c, 200, "OK", questions)
 }
 
 func (ctr *TestControllerImpl) MentalHealthResult(c *gin.Context) {
@@ -42,26 +46,15 @@ func (ctr *TestControllerImpl) MentalHealthResult(c *gin.Context) {
 		return
 	}
 
-	var result float32 = 0
+	var result uint8 = 0
 	for _, val := range body.Result {
-		if !h.ValidMentalHealthQuestion(val.Question) {
+		point, found := h.GetMentalHealthQuestionPoint(val.Question)
+		if !found {
 			ctr.AbortResponse(c, exceptions.NewError(fmt.Sprintf("pertanyaan '%s' tidak terdaftar", val.Question), 400))
 			return
 		}
 
-		switch val.UserAnswer {
-		case "Tidak pernah":
-			result += 0
-		case "Jarang":
-			result += 0.5
-		case "Sesekali":
-			result += 1
-		case "Sering":
-			result += 1.5
-		default:
-			ctr.AbortResponse(c, exceptions.NewError(fmt.Sprintf("jawaban '%s' tidak valid", val.UserAnswer), 400))
-			return
-		}
+		result += point
 	}
 
 	messageResult := h.GetMentalHealthResult(result)

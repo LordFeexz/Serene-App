@@ -6,23 +6,23 @@ import (
 	"time"
 )
 
-func ValidMentalHealthQuestion(s string) bool {
+func GetMentalHealthQuestionPoint(s string) (uint8, bool) {
 	for _, val := range cons.MENTAL_HEALTH_QUESTIONS {
-		if val == s {
-			return true
+		if val.Question == s {
+			return val.Point, true
 		}
 	}
-	return false
+	return 0, false
 }
 
-func GetMentalHealthResult(point float32) string {
+func GetMentalHealthResult(point uint8) string {
 	switch true {
-	case point <= 6:
+	case point == 0:
 		return "Kesehatan Mental anda baik"
-	case point >= 6 && point <= 12:
+	case point >= 1 && point <= 4:
 		return "Kesehatan mental anda perlu diperhatikan, gunakan fitur terapi untuk membantu merelaksasi diri anda"
 	default:
-		return "Segera cari bantuan"
+		return "Segera cari bantuan konsultasi dokter/psikolog"
 	}
 }
 
