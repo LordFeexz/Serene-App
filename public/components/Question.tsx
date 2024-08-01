@@ -6,20 +6,13 @@ export default function Question({
   index,
   handleSetQuestions,
 }: {
-  item: { question: string; answer: boolean | null };
+  item: { question: string; answer: string };
   index: number;
-  handleSetQuestions: (answer: boolean, index: number) => void;
+  handleSetQuestions: (answer: string, index: number) => void;
 }) {
-  const [active, setActive] = useState("null");
   const { height } = Dimensions.get("window");
   const handlePress = (itemChoosen: string) => {
-    if (itemChoosen === "yes") {
-      setActive("yes");
-      handleSetQuestions(true, index);
-    } else {
-      setActive("no");
-      handleSetQuestions(false, index);
-    }
+    handleSetQuestions(itemChoosen, index);
   };
 
   return (
@@ -51,27 +44,53 @@ export default function Question({
         <View>
           <TouchableOpacity
             style={{ flexDirection: "row", alignItems: "center", gap: 4 }}
-            onPress={() => handlePress("yes")}
+            onPress={() => handlePress("Tidak pernah")}
           >
-            {active == "yes" && item.answer ? (
+            {item.answer == "Tidak pernah" ? (
               <Fontisto name="radio-btn-active" size={24} color="black" />
             ) : (
               <Fontisto name="radio-btn-passive" size={24} color="black" />
             )}
-            <Text>Yes</Text>
+            <Text style={{ fontSize: 10 }}>Tidak Pernah</Text>
           </TouchableOpacity>
         </View>
         <View>
           <TouchableOpacity
             style={{ flexDirection: "row", alignItems: "center", gap: 4 }}
-            onPress={() => handlePress("no")}
+            onPress={() => handlePress("Jarang")}
           >
-            {active == "no" && !item.answer ? (
+            {item.answer == "Jarang" ? (
               <Fontisto name="radio-btn-active" size={24} color="black" />
             ) : (
               <Fontisto name="radio-btn-passive" size={24} color="black" />
             )}
-            <Text>No</Text>
+            <Text style={{ fontSize: 10 }}>Jarang</Text>
+          </TouchableOpacity>
+        </View>
+        <View>
+          <TouchableOpacity
+            style={{ flexDirection: "row", alignItems: "center", gap: 4 }}
+            onPress={() => handlePress("Sesekali")}
+          >
+            {item.answer == "Sesekali" ? (
+              <Fontisto name="radio-btn-active" size={24} color="black" />
+            ) : (
+              <Fontisto name="radio-btn-passive" size={24} color="black" />
+            )}
+            <Text style={{ fontSize: 10 }}>Sesekali</Text>
+          </TouchableOpacity>
+        </View>
+        <View>
+          <TouchableOpacity
+            style={{ flexDirection: "row", alignItems: "center", gap: 4 }}
+            onPress={() => handlePress("Sering")}
+          >
+            {item.answer == "Sering" ? (
+              <Fontisto name="radio-btn-active" size={24} color="black" />
+            ) : (
+              <Fontisto name="radio-btn-passive" size={24} color="black" />
+            )}
+            <Text style={{ fontSize: 10 }}>Sering</Text>
           </TouchableOpacity>
         </View>
       </View>

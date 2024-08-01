@@ -214,7 +214,7 @@ export const getMentalHealth = async () => {
 };
 type Questions = {
   question: string;
-  answer: boolean;
+  answer: string;
 };
 
 export const postMentalHealth = async (questions: Questions[]) => {

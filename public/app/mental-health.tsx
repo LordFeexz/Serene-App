@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
 type Questions = {
   question: string;
-  answer: boolean;
+  answer: string;
 };
 
 export default function mentalHealth() {
@@ -24,7 +24,7 @@ export default function mentalHealth() {
   const [disableForm, setDisableForm] = useState(true);
 
   const { height } = Dimensions.get("window");
-  const handleSetQuestions = (answer: boolean, index: number) => {
+  const handleSetQuestions = (answer: string, index: number) => {
     setQuestions((prevQuestions) =>
       prevQuestions.map((item, idx) =>
         idx === index ? { ...item, answer: answer } : item
@@ -38,7 +38,7 @@ export default function mentalHealth() {
         const menatalHealthQuestion = await getMentalHealth();
         const questions = menatalHealthQuestion.data.map((el: string) => ({
           question: el,
-          answer: false,
+          answer: "",
         }));
         setQuestions(questions);
       } catch (error) {
@@ -50,6 +50,7 @@ export default function mentalHealth() {
   }, []);
   const handleSubmit = async () => {
     try {
+      console.log(questions);
       setDisableForm(true);
       const resultMentalHealth = await postMentalHealth(questions);
       setDisableForm(false);
@@ -61,6 +62,7 @@ export default function mentalHealth() {
         },
       });
     } catch (error) {
+      Toast("Harap isi semua jawaban", "danger");
       console.log(error);
     } finally {
       setDisableForm(false);
