@@ -66,7 +66,7 @@ func (ctr *TestControllerImpl) MentalHealthResult(c *gin.Context) {
 		UpdatedAt:   time.Now(),
 	})
 	var motivation string
-	if result >= 7 {
+	if result >= 5 {
 		motivation = h.GetRandomMotivation()
 	}
 	//ASK mau di batasi ga per hari?
