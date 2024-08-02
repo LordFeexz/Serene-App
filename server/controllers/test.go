@@ -53,8 +53,9 @@ func (ctr *TestControllerImpl) MentalHealthResult(c *gin.Context) {
 			ctr.AbortResponse(c, exceptions.NewError(fmt.Sprintf("pertanyaan '%s' tidak terdaftar", val.Question), 400))
 			return
 		}
-
-		result += point
+		if val.UserAnswer {
+			result += point
+		}
 	}
 
 	messageResult := h.GetMentalHealthResult(result)
